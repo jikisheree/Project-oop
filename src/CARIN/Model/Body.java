@@ -1,7 +1,14 @@
 package CARIN.Model;
 
+import java.util.Map;
+
 public interface Body {
-    void UpdateSpeed (int speed);
-    void AddAntibody (int antibody);
-    void Run(int location);
+    void addAntibody(int location);
+    void addVirus();
+    void run();
+    int[][] getCellLoc();
+    Map<Integer,Host> getOrganism();
+    void moveAntibody(int location, int newLocation);
+    int getVirusNum();
+    int getAntibodyNum();
 }
