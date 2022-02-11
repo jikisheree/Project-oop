@@ -3,7 +3,7 @@ package CARIN.Model;
 import java.util.*;
 
 public class BodyImp implements Body{
-    Map<Integer, Host> organismInOrder = new HashMap<>();
+    List<Host>organismInOrder = new LinkedList<>();
     int[][] cellLoc;
     int timeUnit;
     int antiCredit;
@@ -15,10 +15,12 @@ public class BodyImp implements Body{
     int m, n;
     int order;
     private int virusNum, antibodyNum;
+    List<String> geneticCode;
 
     // input from config file
     // assume m and n is <=10 first
     public BodyImp(
+            List<String> geneticCode,
             int m, int n,
             int antiCredit,
             int placeCost,
@@ -44,7 +46,7 @@ public class BodyImp implements Body{
         this.virusAttack = virusAttack;
         this.virusGain = virusGain;
         this.order = 1;
-
+        this.geneticCode = geneticCode;
     }
     private void buildField(){
         for (int i=0;i<m;i++){
@@ -56,21 +58,25 @@ public class BodyImp implements Body{
 
     private Host randomAnti(int location) {
         int x = (int) (Math.random() * 10) + 1;
-        if(x%3==0) return new Antibody1(antiHealth, antiAttack, antiGain,location);
-        else if(x%3==1) return new Antibody2(antiHealth, antiAttack, antiGain,location);
-        else return new Antibody3(antiHealth, antiAttack, antiGain,location);
+        return new Antibody1(geneticCode.get(x),antiHealth, antiAttack, antiGain,location);
     }
 
     private Host randomVirus(int location) {
-        int x = (int) (Math.random() * 10) + 1;
-        if(x%3==0) return new Virus1(antiHealth, antiAttack, antiGain,location);
-        else if(x%3==1) return new Virus2(antiHealth, antiAttack, antiGain,location);
-        else return new Virus3(antiHealth, antiAttack, antiGain,location);
+        int x = (int) (Math.random() * geneticCode.size());
+        return new Virus1(geneticCode.get(x),antiHealth, antiAttack, antiGain,location);
     }
 
-    private void addToCellLoc(int location, int order){
+    private void addToCellLoc(int location){
         int m = location/10;
         int n = location%10;
+        cellLoc[m][n] = order;
+    }
+    private void changeCellLoc(int location, int newLocation, int order){
+        int m = location/10;
+        int n = location%10;
+        cellLoc[m][n] = 0;
+        m = newLocation/10;
+        n = newLocation%10;
         cellLoc[m][n] = order;
     }
 
@@ -90,8 +96,8 @@ public class BodyImp implements Body{
     @Override
     public void addAntibody(int location) {
         if(antiCredit>0) {
-            this.organismInOrder.put(order, randomAnti(location));
-            addToCellLoc(location, order);
+            this.organismInOrder.add(randomAnti(location));
+            addToCellLoc(location);
             antiCredit-=placeCost;
             antibodyNum++;
             order++;
@@ -103,8 +109,8 @@ public class BodyImp implements Body{
     public void addVirus() {
         // have to use virusSpawn variable as probability.
         int location = randomLocation();
-        this.organismInOrder.put(order, randomVirus(location));
-        addToCellLoc(location,order);
+        this.organismInOrder.add(randomVirus(location));
+        addToCellLoc(location);
         virusNum++;
         order++;
     }
@@ -124,7 +130,7 @@ public class BodyImp implements Body{
     }
 
     @Override
-    public Map<Integer, Host> getOrganism() {
+    public List<Host> getOrganism() {
         return organismInOrder;
     }
 
@@ -132,6 +138,8 @@ public class BodyImp implements Body{
     public void moveAntibody(int location, int newLocation) {
         Host host = findOrganByLocation(location);
         host.moveByPlayer(newLocation);
+        int order = organismInOrder.indexOf(host);
+        changeCellLoc(location,newLocation,order);
     }
 
     @Override
