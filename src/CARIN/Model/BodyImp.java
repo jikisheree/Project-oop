@@ -58,12 +58,12 @@ public class BodyImp implements Body{
 
     private Host randomAnti(int[] location) {
         int x = (int) (Math.random() * 10) + 1;
-        return new Antibody1(geneticCode.get(x),antiHealth, antiAttack, antiGain,location);
+        return new Antibody(geneticCode.get(x),antiHealth, antiAttack, antiGain,location);
     }
 
     private Host randomVirus(int[] location) {
         int x = (int) (Math.random() * geneticCode.size());
-        return new Virus1(geneticCode.get(x),antiHealth, antiAttack, antiGain,location);
+        return new Virus(geneticCode.get(x),antiHealth, antiAttack, antiGain,location);
     }
 
     private void addToCellLoc(int[] location){

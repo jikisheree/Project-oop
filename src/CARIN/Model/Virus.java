@@ -1,9 +1,9 @@
 package CARIN.Model;
 
-public class Virus1 extends HostImp {
+public class Virus extends HostImp {
 
-    public Virus1(String geneticCode, int health, int attackDamage,
-                  int gain, int[] location) {
+    public Virus(String geneticCode, int health, int attackDamage,
+                 int gain, int[] location) {
         this.health = health;
         this.attackDamage = attackDamage;
         this.gain = gain;
