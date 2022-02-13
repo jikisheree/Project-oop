@@ -72,7 +72,6 @@ public class Parser {
     public String parseDirection() throws SyntaxError{
         Expr e;
         String dir = tkz.consume();
-
         return dir;
     }
     // BlockStatement → { Statement* }

@@ -63,21 +63,15 @@ public class BodyImp implements Body{
 
     private Host randomVirus(int[] location) {
         int x = (int) (Math.random() * geneticCode.size());
-        return new Virus(geneticCode.get(x),antiHealth, antiAttack, antiGain,location);
+        return new Virus(geneticCode.get(x),antiHealth, antiAttack, antiGain,location,m,n);
     }
 
     private void addToCellLoc(int[] location){
-        int m = location[0];
-        int n = location[1];
-        cellLoc[m][n] = order;
+        cellLoc[location[0]][location[1]] = order;
     }
     private void changeCellLoc(int[] location, int[] newLocation, int order){
-        int m = location[0];
-        int n = location[1];
-        cellLoc[m][n] = 0;
-        m = newLocation[0];
-        n = newLocation[1];
-        cellLoc[m][n] = order;
+        cellLoc[location[0]][location[1]] = 0;
+        cellLoc[newLocation[0]][newLocation[1]] = order;
     }
 
     private int[] randomLocation(){
@@ -123,7 +117,6 @@ public class BodyImp implements Body{
         Host current;
         for(int i=1; i<(order-1); i++){
             current = organismInOrder.get(i);
-
         }
     }
 
