@@ -3,7 +3,7 @@ package CARIN.Model;
 public class Virus1 extends HostImp {
 
     public Virus1(String geneticCode, int health, int attackDamage,
-                  int gain, int location) {
+                  int gain, int[] location) {
         this.health = health;
         this.attackDamage = attackDamage;
         this.gain = gain;
@@ -11,13 +11,9 @@ public class Virus1 extends HostImp {
         this.geneticCode = geneticCode;
     }
 
-    @Override
-    public void action() {
-
-    }
 
     @Override
-    public void moveByPlayer(int newLocation) {
+    public void move(String newLocation) {
         System.out.println("Cannot move a virus!");
     }
 

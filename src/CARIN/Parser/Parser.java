@@ -1,13 +1,17 @@
 package CARIN.Parser;
 
+import CARIN.Model.Host;
+
 public class Parser {
 
     private Tokenizer tkz;
     private Expr AST;
+    private Host host;
 
-    public Parser(String src){
+    public Parser(String src, Host host){
         this.tkz = new Tokenizer(src);
         AST = parse();
+        this.host = host;
     }
 
     public Expr parse() throws SyntaxError{
@@ -52,15 +56,24 @@ public class Parser {
     // MoveCommand → move Direction
     // AttackCommand → shoot Direction
     public Expr parseAction() throws SyntaxError{
+        String con = tkz.consume();
+        while(tkz.peek("move")||tkz.peek("shoot")){
+            if(tkz.peek("move")){
+                tkz.consume();
+                host.move(parseDirection());
+            }else if(tkz.peek("shoot")){
+                tkz.consume();
+                host.shoot(parseDirection());
+            }
+        }
         return null;
     }
     // Direction → left | right | up | down | upleft | upright | downleft | downright
-    public Expr parseDirection() throws SyntaxError{
-//        while (tkz.peek("left")||tkz.peek("right")||tkz.peek("up")||tkz.peek("down")
-//        ||tkz.peek("upleft")||tkz.peek("upright")||tkz.peek("downleft")||tkz.peek("downright")){
-//            if(tkz.peek("left"))
-//        }
-        return null;
+    public String parseDirection() throws SyntaxError{
+        Expr e;
+        String dir = tkz.consume();
+
+        return dir;
     }
     // BlockStatement → { Statement* }
     public Expr parseBlock() throws SyntaxError{
