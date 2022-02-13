@@ -31,67 +31,75 @@ public class Parser {
         }
     }
     // Statement → Command | BlockStatement | IfStatement | WhileStatement
-    public Expr parseStatement() throws SyntaxError{
-        Expr e = parseCommand();
-        while(tkz.peek("if")||tkz.peek("while")||tkz.peek("{")){
-            if(tkz.peek("if")){
-                tkz.consume();
-                e = parseIf();
-            }else if(tkz.peek("while")){
-                tkz.consume();
-                e = parseWhile();
-            }else{
+    public Statement parseStatement() throws SyntaxError{
+        Statement s = parseCommand();
+            if(tkz.peek("if")) s = parseIf();
+            else if(tkz.peek("while")) s = parseWhile();
+            else if(tkz.peek("{")) s = parseBlock();
+        return s;
+    }
 
-                e = parseBlock();
-            }
-        }
-        return e;
+    // BlockStatement → { Statement* }
+    public Statement parseBlock() throws SyntaxError{
+        tkz.consume("{");
+        Statement statement = parseStatement();
+        tkz.consume("}");
+        return statement;
+    }
+    // IfStatement → if ( Expression ) then Statement else Statement
+    public Statement parseIf() throws SyntaxError{
+        tkz.consume("if");
+        tkz.consume("(");
+        Expr condition = parseExpression();
+        tkz.consume(")");
+        tkz.consume("then");
+        Statement then = parseStatement();
+        tkz.consume("else");
+        Statement el = parseStatement();
+        return new Statement("if", condition, then, el);
+    }
+    // WhileStatement → while ( Expression ) Statement
+    public Statement parseWhile() throws SyntaxError{
+        tkz.consume("while");
+        tkz.consume("(");
+        Expr condition = parseExpression();
+        tkz.consume(")");
+        Statement then = parseStatement();
+        return new Statement("while", condition, then);
     }
     // Command → AssignmentStatement | ActionCommand
     // AssignmentStatement → <identifier> = Expression
-    public Expr parseCommand() throws SyntaxError{
-        return null;
+    public Statement parseCommand() throws SyntaxError{
+        Statement s;
+        String identifier = null;
+        if(tkz.peek("move") || tkz.peek("shoot")){
+            s = parseAction();
+        }else {
+            identifier = tkz.consume();
+            s = new Statement(identifier, parseExpression());
+        }
+        return s;
     }
     // ActionCommand → MoveCommand | AttackCommand
     // MoveCommand → move Direction
     // AttackCommand → shoot Direction
-    public Expr parseAction() throws SyntaxError{
-        String con = tkz.consume();
-        while(tkz.peek("move")||tkz.peek("shoot")){
+    public Statement parseAction() throws SyntaxError{
+        Statement action = null;
             if(tkz.peek("move")){
                 tkz.consume();
-                host.move(parseDirection());
+                String dir = parseDirection();
+                action = new Statement("move", dir);
             }else if(tkz.peek("shoot")){
                 tkz.consume();
-                host.shoot(parseDirection());
+                String dir = parseDirection();
+                action = new Statement("shoot", dir);
             }
-        }
-        return null;
+            return action;
     }
     // Direction → left | right | up | down | upleft | upright | downleft | downright
     public String parseDirection() throws SyntaxError{
-        Expr e;
         String dir = tkz.consume();
         return dir;
-    }
-    // BlockStatement → { Statement* }
-    public Expr parseBlock() throws SyntaxError{
-        return null;
-    }
-    // IfStatement → if ( Expression ) then Statement else Statement
-    public Expr parseIf() throws SyntaxError{
-        Expr e;
-        String con = tkz.consume();
-        tkz.consume("(");
-        e = parseExpression();
-        tkz.consume(")");
-        tkz.consume("then");
-        Statement s = new Statement(con, e);
-        return null;
-    }
-    // WhileStatement → while ( Expression ) Statement
-    public Expr parseWhile() throws SyntaxError{
-        return null;
     }
     // Expression → Expression + Term | Expression - Term | Term
     public Expr parseExpression() throws SyntaxError{
@@ -111,7 +119,6 @@ public class Parser {
     // Term → Term * Factor | Term / Factor | Term % Factor | Factor
     public Expr parseTerm() throws SyntaxError{
         Expr e = parseFactor();
-
         while(tkz.peek("*") || tkz.peek("/") || tkz.peek("%")){
             if(tkz.peek("*")){
                 tkz.consume();
@@ -151,7 +158,17 @@ public class Parser {
     }
     // SensorExpression → virus | antibody | nearby Direction
     public Expr parseSensor() throws SyntaxError{
-        return null;
+        if(tkz.peek("virus")){
+            tkz.consume();
+            return new SensorExp("virus",host);
+        }else if(tkz.peek("antibody")) {
+            tkz.consume();
+            return new SensorExp("antibody", host);
+        }else if(tkz.peek("nearby")){
+            tkz.consume();
+            String dir = parseDirection();
+            return new SensorExp(dir, host);
+        }else throw new SyntaxError(tkz.consume());
     }
 
     public int eval(){
