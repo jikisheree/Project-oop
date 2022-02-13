@@ -38,7 +38,7 @@ public class HostImp implements Host{
     }
 
     public void move(int[] newLocation){
-
+        location = newLocation;
     }
 
     @Override
