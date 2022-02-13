@@ -51,5 +51,15 @@ public class HostImp implements Host{
         health-=damage;
     }
 
+    @Override
+    public int getNearest() {
+        return 0;
+    }
+
+    @Override
+    public int getNearBy(String direction) {
+        return 0;
+    }
+
     // Parser needed here (protected declaration)
 }

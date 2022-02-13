@@ -6,6 +6,7 @@ public interface Host {
     void move(String newLocation);
     int getHealth();
     void setHealth(int damage);
-
+    int getNearest();
+    int getNearBy(String direction);
     void move(int[] newLocation);
 }
