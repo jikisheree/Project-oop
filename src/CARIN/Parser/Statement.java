@@ -22,10 +22,10 @@ public class Statement implements Program{
     public void eval() {
         Boolean check;
         check = condition.eval() > 0;
-        if (condition.equals("if")) {
+        if (type.equals("if")) {
             if (check) then.eval();
             else el.eval();
-        }else if(condition.equals("while")){
+        }else if(type.equals("while")){
             while (check){
                 then.eval();
             }

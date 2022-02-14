@@ -3,20 +3,24 @@ package CARIN.Parser;
 import CARIN.Model.Host;
 import CARIN.Model.HostImp;
 
+import java.util.HashMap;
+
 public class Parser {
 
     private Tokenizer tkz;
-    private Expr AST;
+    private Program AST;
     private Host host;
+    private HashMap<String, Expr> idenKeep;
 
     public Parser(String src, Host host){
         this.tkz = new Tokenizer(src);
-        AST = parse();
         this.host = host;
+        idenKeep = new HashMap<>();
+        AST = parse();
     }
 
-    public Expr parse() throws SyntaxError{
-        Expr result = parse();
+    public Program parse() throws SyntaxError{
+        Program result = parseStatement();
         if(tkz.peek().equals(""))
             return result;
         else
@@ -33,10 +37,13 @@ public class Parser {
     }
     // Statement → Command | BlockStatement | IfStatement | WhileStatement
     public Program parseStatement() throws SyntaxError{
-        Program s = parseCommand();
-            if(tkz.peek("if")) s = parseIf();
-            else if(tkz.peek("while")) s = parseWhile();
-            else if(tkz.peek("{")) s = parseBlock();
+        Program s = null;
+        while (!tkz.peek().equals("")) {
+            if (tkz.peek("if")) s = parseIf();
+            else if (tkz.peek("while")) s = parseWhile();
+            else if (tkz.peek("{")) s = parseBlock();
+            else s = parseCommand();
+        }
         return s;
     }
 
@@ -77,7 +84,8 @@ public class Parser {
             s = parseAction();
         }else {
             identifier = tkz.consume();
-            s = new Command(identifier, parseExpression());
+            tkz.consume("=");
+            s = new Command(identifier, parseExpression(), idenKeep);
         }
         return s;
     }
@@ -144,17 +152,20 @@ public class Parser {
     }
     // Power → <number> | <identifier> | ( Expression ) | SensorExpression
     public Expr parsePower() throws SyntaxError{
-        Expr e = parseSensor();
-        while(tkz.peek("(") || isNumber(tkz.peek())) {
+        Expr e;
+
             if (isNumber(tkz.peek())) {
                 return new Number(Integer.parseInt(tkz.consume()));
-            } else {
-                tkz.consume("(");
+            } else if(tkz.peek("(") ) {
+                tkz.consume();
                 e = parseExpression();
                 tkz.consume(")");
-                return e;
-            }
-        }
+            } else if(tkz.peek("antibody") || tkz.peek("virus")
+            || tkz.peek("nearby")) {
+                e = parseSensor();
+            }else
+                e = idenKeep.get(tkz.consume());
+
         return e;
     }
     // SensorExpression → virus | antibody | nearby Direction
@@ -172,14 +183,14 @@ public class Parser {
         }else throw new SyntaxError(tkz.consume());
     }
 
-    public int eval(){
-        return AST.eval();
+    public void eval(){
+        AST.eval();
     }
 
     public static void main(String[] args) {
-        String gene = "virusLoc % 10 - 7";
+        String gene = " virusloc = 10%3*10 if(virusloc - 2) then move left else shoot right";
         Parser parser = new Parser(gene, new HostImp());
-        System.out.println(parser.parseExpression());
+        parser.eval();
     }
 
 }

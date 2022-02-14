@@ -39,7 +39,8 @@ public class HostImp implements Host{
     }
 
     public void move(int[] newLocation){
-        location = newLocation;
+//        location = newLocation;
+        System.out.println("move");
     }
 
     public void cantmove(){}

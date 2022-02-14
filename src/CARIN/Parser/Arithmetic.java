@@ -11,8 +11,8 @@ public class Arithmetic implements Expr {
     }
     @Override
     public int eval() {
-        int lv = left.eval();
-        int rv = right.eval();
+        int lv = this.left.eval();
+        int rv = this.right.eval();
         if (operator.equals("+"))
             return lv + rv;
         if (operator.equals("-"))
