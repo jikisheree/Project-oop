@@ -21,16 +21,17 @@ public class Command implements Program {
     public Command(String type, Expr expr, HashMap<String, Expr> identifier){
         this.type = type;
         this.expression = expr;
+        this.identifier = identifier;
     }
 
     @Override
     public void eval() {
         if(type.equals("move")){
             host.move(direction);
-//            System.out.println("move");
+//            System.out.println("move"+direction);
         }else if(type.equals("shoot")){
             host.shoot(direction);
-//            System.out.println("shoot");
+//            System.out.println("shoot"+direction);
         }else{
             // assignment statement
             identifier.put(type, expression);

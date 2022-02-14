@@ -18,10 +18,14 @@ public class Statement implements Program{
         this.condition = con;
         this.then = then;
     }
+    public Statement(String type){
+        this.type = type;
+    }
 
     public void eval() {
-        Boolean check;
-        check = condition.eval() > 0;
+        Boolean check = null;
+        if(condition!=null)
+            check = condition.eval() > 0;
         if (type.equals("if")) {
             if (check) then.eval();
             else el.eval();
@@ -29,6 +33,6 @@ public class Statement implements Program{
             while (check){
                 then.eval();
             }
-        }
+        }else{}
     }
 }

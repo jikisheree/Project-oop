@@ -4,26 +4,27 @@ import CARIN.Model.Host;
 import CARIN.Model.HostImp;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Parser {
 
     private Tokenizer tkz;
-    private Program AST;
     private Host host;
     private HashMap<String, Expr> idenKeep;
+    private List<Program> statement;
 
     public Parser(String src, Host host){
         this.tkz = new Tokenizer(src);
         this.host = host;
         idenKeep = new HashMap<>();
-        AST = parse();
+        this.statement = new LinkedList<>();
+        parse();
     }
 
-    public Program parse() throws SyntaxError{
-        Program result = parseStatement();
-        if(tkz.peek().equals(""))
-            return result;
-        else
+    public void parse() throws SyntaxError{
+        parseProgram();
+        if(!tkz.peek().equals(""))
             throw new SyntaxError();
     }
 
@@ -35,24 +36,28 @@ public class Parser {
             return false;
         }
     }
+    public void parseProgram() {
+        while(!tkz.peek(""))
+            this.statement.add(parseStatement());
+
+    }
     // Statement → Command | BlockStatement | IfStatement | WhileStatement
     public Program parseStatement() throws SyntaxError{
-        Program s = null;
-        while (!tkz.peek().equals("")) {
+        Program s;
             if (tkz.peek("if")) s = parseIf();
             else if (tkz.peek("while")) s = parseWhile();
-            else if (tkz.peek("{")) s = parseBlock();
+            // BlockStatement → { Statement* }
+            else if (tkz.peek("{")) {
+                tkz.consume("{");
+                while (!tkz.peek("}")) {
+                    s = parseStatement();
+                    this.statement.add(s); /*to be fixed*/
+                }
+                tkz.consume("}");
+                return new Statement("none");
+            }
             else s = parseCommand();
-        }
         return s;
-    }
-
-    // BlockStatement → { Statement* }
-    public Program parseBlock() throws SyntaxError{
-        tkz.consume("{");
-        Program statement = parseStatement();
-        tkz.consume("}");
-        return statement;
     }
     // IfStatement → if ( Expression ) then Statement else Statement
     public Program parseIf() throws SyntaxError{
@@ -79,7 +84,7 @@ public class Parser {
     // AssignmentStatement → <identifier> = Expression
     public Program parseCommand() throws SyntaxError{
         Program s;
-        String identifier = null;
+        String identifier;
         if(tkz.peek("move") || tkz.peek("shoot")){
             s = parseAction();
         }else {
@@ -107,8 +112,7 @@ public class Parser {
     }
     // Direction → left | right | up | down | upleft | upright | downleft | downright
     public String parseDirection() throws SyntaxError{
-        String dir = tkz.consume();
-        return dir;
+        return tkz.consume();
     }
     // Expression → Expression + Term | Expression - Term | Term
     public Expr parseExpression() throws SyntaxError{
@@ -164,7 +168,7 @@ public class Parser {
             || tkz.peek("nearby")) {
                 e = parseSensor();
             }else
-                e = idenKeep.get(tkz.consume());
+                e = new Identifier(tkz.consume(), idenKeep);
 
         return e;
     }
@@ -184,11 +188,46 @@ public class Parser {
     }
 
     public void eval(){
-        AST.eval();
+        for(Program each:statement){
+            each.eval();
+        }
     }
 
     public static void main(String[] args) {
-        String gene = " virusloc = 10%3*10 if(virusloc - 2) then move left else shoot right";
+        // example genetic code in spec doc
+        String gene = "virusLoc = 28 " +
+                "if (virusLoc / 10 - 1) " +
+                "then " +
+                "  if (virusLoc % 10 - 7) then move upleft " +
+                "  else if (virusLoc % 10 - 6) then move left " +
+                "  else if (virusLoc % 10 - 5) then move downleft " +
+                "  else if (virusLoc % 10 - 4) then move down " +
+                "  else if (virusLoc % 10 - 3) then move downright " +
+                "  else if (virusLoc % 10 - 2) then move right " +
+                "  else if (virusLoc % 10 - 1) then move upright " +
+                "  else move up " +
+                " else if (virusLoc) " +
+                "then  " +
+                "  if (virusLoc % 10 - 7) then shoot upleft " +
+                "  else if (virusLoc % 10 - 6) then shoot left " +
+                "  else if (virusLoc % 10 - 5) then shoot downleft " +
+                "  else if (virusLoc % 10 - 4) then shoot down " +
+                "  else if (virusLoc % 10 - 3) then shoot downright " +
+                "  else if (virusLoc % 10 - 2) then shoot right " +
+                "  else if (virusLoc % 10 - 1) then shoot upright " +
+                "  else shoot up " +
+                " else " +
+                "{ " +
+                "  dir = 10 % 8 " +
+                "  if (dir - 6) then move upleft " +
+                "  else if (dir - 5) then move left " +
+                "  else if (dir - 4) then move downleft " +
+                "  else if (dir - 3) then move down " +
+                "  else if (dir - 2) then move downright " +
+                "  else if (dir - 1) then move right " +
+                "  else if (dir) then move upright " +
+                "  else move up " +
+                "} ";
         Parser parser = new Parser(gene, new HostImp());
         parser.eval();
     }
