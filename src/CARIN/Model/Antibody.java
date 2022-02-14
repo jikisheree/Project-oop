@@ -8,9 +8,12 @@ public class Antibody extends HostImp{
         this.gain = gain;
         this.location = location;
         this.geneticCode = geneticCode;
+        this.m = m;
+        this.n = n;
     }
 
-
-    // Antibody1 genetic code here
-
+    @Override
+    public void cantmove() {
+        System.out.println("Cannot move a antibody!");
+    }
 }
