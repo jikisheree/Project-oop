@@ -1,6 +1,7 @@
 package CARIN.Parser;
 
 import CARIN.Model.Host;
+import CARIN.Model.HostImp;
 
 public class Parser {
 
@@ -31,8 +32,8 @@ public class Parser {
         }
     }
     // Statement → Command | BlockStatement | IfStatement | WhileStatement
-    public Statement parseStatement() throws SyntaxError{
-        Statement s = parseCommand();
+    public Program parseStatement() throws SyntaxError{
+        Program s = parseCommand();
             if(tkz.peek("if")) s = parseIf();
             else if(tkz.peek("while")) s = parseWhile();
             else if(tkz.peek("{")) s = parseBlock();
@@ -40,59 +41,59 @@ public class Parser {
     }
 
     // BlockStatement → { Statement* }
-    public Statement parseBlock() throws SyntaxError{
+    public Program parseBlock() throws SyntaxError{
         tkz.consume("{");
-        Statement statement = parseStatement();
+        Program statement = parseStatement();
         tkz.consume("}");
         return statement;
     }
     // IfStatement → if ( Expression ) then Statement else Statement
-    public Statement parseIf() throws SyntaxError{
+    public Program parseIf() throws SyntaxError{
         tkz.consume("if");
         tkz.consume("(");
         Expr condition = parseExpression();
         tkz.consume(")");
         tkz.consume("then");
-        Statement then = parseStatement();
+        Program then = parseStatement();
         tkz.consume("else");
-        Statement el = parseStatement();
+        Program el = parseStatement();
         return new Statement("if", condition, then, el);
     }
     // WhileStatement → while ( Expression ) Statement
-    public Statement parseWhile() throws SyntaxError{
+    public Program parseWhile() throws SyntaxError{
         tkz.consume("while");
         tkz.consume("(");
         Expr condition = parseExpression();
         tkz.consume(")");
-        Statement then = parseStatement();
+        Program then = parseStatement();
         return new Statement("while", condition, then);
     }
     // Command → AssignmentStatement | ActionCommand
     // AssignmentStatement → <identifier> = Expression
-    public Statement parseCommand() throws SyntaxError{
-        Statement s;
+    public Program parseCommand() throws SyntaxError{
+        Program s;
         String identifier = null;
         if(tkz.peek("move") || tkz.peek("shoot")){
             s = parseAction();
         }else {
             identifier = tkz.consume();
-            s = new Statement(identifier, parseExpression());
+            s = new Command(identifier, parseExpression());
         }
         return s;
     }
     // ActionCommand → MoveCommand | AttackCommand
     // MoveCommand → move Direction
     // AttackCommand → shoot Direction
-    public Statement parseAction() throws SyntaxError{
-        Statement action = null;
+    public Program parseAction() throws SyntaxError{
+        Program action = null;
             if(tkz.peek("move")){
                 tkz.consume();
                 String dir = parseDirection();
-                action = new Statement("move", dir);
+                action = new Command("move", dir, host);
             }else if(tkz.peek("shoot")){
                 tkz.consume();
                 String dir = parseDirection();
-                action = new Statement("shoot", dir);
+                action = new Command("shoot", dir, host);
             }
             return action;
     }
@@ -173,6 +174,12 @@ public class Parser {
 
     public int eval(){
         return AST.eval();
+    }
+
+    public static void main(String[] args) {
+        String gene = "virusLoc % 10 - 7";
+        Parser parser = new Parser(gene, new HostImp());
+        System.out.println(parser.parseExpression());
     }
 
 }
