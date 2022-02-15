@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Virus extends HostImp {
 
-    public Virus(String geneticCode, int health, int attackDamage,int gain, int[] location,int m,int n, List<Host> organismInOrder) {
+    public Virus(String geneticCode, int health, int attackDamage,int gain, int[] location,int m,int n, List<Host> organismInOrder,int[][] cellLoc) {
         this.health = health;
         this.attackDamage = attackDamage;
         this.gain = gain;
@@ -12,6 +12,7 @@ public class Virus extends HostImp {
         this.m = m;
         this.n = n;
         this.organismInOrder = organismInOrder;
+        this.cellLoc = cellLoc;
     }
 
     @Override
@@ -22,6 +23,12 @@ public class Virus extends HostImp {
     @Override
     public int gettype(){
         return 1;
+    }
+
+    public void death(Antibody antibody){
+        cellLoc[location[0]][location[1]] = 0;
+        organismInOrder.remove(organismInOrder.indexOf(this));
+        antibody.antiCredit+=antibody.gain;
     }
 
 }

@@ -4,9 +4,9 @@ import java.util.*;
 
 public class HostImp implements Host{
 
-    int health, attackDamage, gain;
+    int health, attackDamage, gain, movecost, antiCredit, m, n;
     int[] location = new int[2];
-    int m,n;
+    int[][] cellLoc;
     String geneticCode;
     List<Host> organismInOrder;
 
@@ -42,7 +42,11 @@ public class HostImp implements Host{
         if(!shootloc.equals(location)) {
             for (Host h : organismInOrder) {
                 if (h.getlocation().equals(shootloc)) {
-                    h.setHealth(attackDamage);
+                    if(h.setHealth(attackDamage) && this.gettype() == 2 && h.gettype() == 1 ){
+                        h.death(this);
+                    }
+                    health+=gain;
+                    System.out.println("shoot" + dir);
                 }
             }
         }
@@ -73,12 +77,12 @@ public class HostImp implements Host{
             location[0]+=1;
             location[1]+=1;
         }else this.cantmove();
+
+        System.out.println("move to" + dir);
     }
 
-    public void move(int[] newLocation){
-//        location = newLocation;
-        System.out.println("move");
-    }
+    @Override
+    public void move(int[] newLocation) { }
 
     @Override
     public int[] getlocation() {
@@ -89,9 +93,13 @@ public class HostImp implements Host{
     }
 
     @Override
-    public int gettype() {
-        return 0;
+    public int gettype() { return 0; }
+
+    @Override
+    public void death(Host host) {
+
     }
+
 
     public void cantmove(){}
 
@@ -102,8 +110,12 @@ public class HostImp implements Host{
     }
 
     @Override
-    public void setHealth(int damage) {
+    public boolean setHealth(int damage) {
         health-=damage;
+        if(health <= 0){
+            return true;
+        }
+        else return false;
     }
 
     @Override
@@ -111,7 +123,7 @@ public class HostImp implements Host{
         Map<Integer,String> alldir = new HashMap<>();
         int[] distance = new int [8];
         int i = 0;
-        String[] direction = {"up", "down","right","left","upleft","downleft","upright","downright"};
+        String[] direction = {"up","down","right","left","upleft","downleft","upright","downright"};
         for(String dir : direction){
             int x = this.getNearBy(dir);
             if(x!=0) {
@@ -201,4 +213,5 @@ public class HostImp implements Host{
         if(ans == m*n*10) return 0;
         else return ans;
     }
+
 }

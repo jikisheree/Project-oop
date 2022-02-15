@@ -57,13 +57,13 @@ public class BodyImp implements Body{
     }
 
     private Host randomAnti(int[] location) {
-        int x = (int) (Math.random() * 10) + 1;
-        return new Antibody(geneticCode.get(x),antiHealth, antiAttack, antiGain,location,m,n, organismInOrder);
+        int x = (int) (Math.random() * 3) + 1;
+        return new Antibody(geneticCode.get(x), antiHealth, antiAttack, antiGain, moveCost, antiCredit, location, m, n, organismInOrder, cellLoc,this);
     }
 
     private Host randomVirus(int[] location) {
         int x = (int) (Math.random() * geneticCode.size());
-        return new Virus(geneticCode.get(x),antiHealth, antiAttack, antiGain,location,m,n, organismInOrder);
+        return new Virus(geneticCode.get(x), antiHealth, antiAttack, antiGain, location, m, n, organismInOrder, cellLoc);
     }
 
     private void addToCellLoc(int[] location){
@@ -106,6 +106,15 @@ public class BodyImp implements Body{
         int[] location = randomLocation();
         this.organismInOrder.add(randomVirus(location));
         addToCellLoc(location);
+        virusNum++;
+        order++;
+    }
+
+    public void addVirus(Virus virus,int[] loc) {
+        // have to use virusSpawn variable as probability.
+        new Virus(virus.geneticCode, antiHealth, antiAttack, antiGain, loc, m, n, organismInOrder, cellLoc);
+        this.organismInOrder.add(virus);
+        addToCellLoc(loc);
         virusNum++;
         order++;
     }
