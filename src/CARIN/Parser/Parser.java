@@ -17,7 +17,7 @@ public class Parser {
     public Parser(String src, Host host){
         this.tkz = new Tokenizer(src);
         this.host = host;
-        idenKeep = new HashMap<>();
+        idenKeep = host.getIdentifier();
         this.statement = new LinkedList<>();
         parse();
     }

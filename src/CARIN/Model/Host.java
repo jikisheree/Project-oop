@@ -1,5 +1,9 @@
 package CARIN.Model;
 
+import CARIN.Parser.Expr;
+
+import java.util.HashMap;
+
 public interface Host {
     void shoot(String direction);
     void move(String newLocation);
@@ -8,7 +12,9 @@ public interface Host {
     int getNearest();
     int getNearBy(String direction);
     void move(int[] newLocation);
-    int[] getlocation();
-    int gettype();
-    void death(Host host);
+    int[] getLocation();
+    int getType();
+    void isDeath(Host host);
+    void eval();
+    HashMap<String, Expr> getIdentifier();
 }

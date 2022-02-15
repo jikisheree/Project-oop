@@ -1,14 +1,19 @@
 package CARIN.Model;
 
+import CARIN.Parser.Expr;
+import CARIN.Parser.Parser;
+
 import java.util.*;
 
 public class HostImp implements Host{
 
-    int health, attackDamage, gain, movecost, antiCredit, m, n;
+    int health, attackDamage, gain, moveCost, m, n;
     int[] location = new int[2];
     int[][] cellLoc;
     String geneticCode;
     List<Host> organismInOrder;
+    HashMap<String, Expr> identifier;
+    Parser parser;
 
     @Override
     public void shoot(String direction) {
@@ -39,18 +44,17 @@ public class HostImp implements Host{
         }else{
             System.out.println("can't shoot");
         }
-        if(!shootloc.equals(location)) {
+        if(!Arrays.equals(shootloc, location)) {
             for (Host h : organismInOrder) {
-                if (h.getlocation().equals(shootloc)) {
-                    if(h.setHealth(attackDamage) && this.gettype() == 2 && h.gettype() == 1 ){
-                        h.death(this);
+                if (Arrays.equals(h.getLocation(), shootloc)) {
+                    if(h.setHealth(attackDamage) && this.getType() == 2 && h.getType() == 1 ){
+                        h.isDeath(this);
                     }
                     health+=gain;
                     System.out.println("shoot" + dir);
                 }
             }
         }
-
     }
 
     @Override
@@ -76,16 +80,16 @@ public class HostImp implements Host{
         }else if (dir.equals("downright") && location[0]<m && location[1]<n){
             location[0]+=1;
             location[1]+=1;
-        }else this.cantmove();
+        }else this.cantMove();
 
-        System.out.println("move to" + dir);
+        System.out.println("moved to " + dir);
     }
 
     @Override
     public void move(int[] newLocation) { }
 
     @Override
-    public int[] getlocation() {
+    public int[] getLocation() {
         int[] loc = new int[2];
         loc[0] = location[0];
         loc[1] = location[1];
@@ -93,29 +97,32 @@ public class HostImp implements Host{
     }
 
     @Override
-    public int gettype() { return 0; }
+    public int getType() { return 0; }
 
     @Override
-    public void death(Host host) {
+    public void isDeath(Host host) {}
 
+    @Override
+    public void eval() {
+        parser.eval();
     }
 
+    @Override
+    public HashMap<String, Expr> getIdentifier() {
+        return identifier;
+    }
 
-    public void cantmove(){}
+    public void cantMove(){}
 
     @Override
     public int getHealth() {
-        int h = health;
-        return h;
+        return health;
     }
 
     @Override
     public boolean setHealth(int damage) {
         health-=damage;
-        if(health <= 0){
-            return true;
-        }
-        else return false;
+        return health <= 0;
     }
 
     @Override
@@ -135,15 +142,17 @@ public class HostImp implements Host{
         Arrays.sort(distance);
         String dis = String.valueOf(distance[0]);
         String dir = alldir.get(dis);
-        if(dir.equals("up")) return Integer.parseInt(dis+"1");
-        else if(dir.equals("upright")) return Integer.parseInt(dis+"2");
-        else if(dir.equals("right")) return Integer.parseInt(dis+"3");
-        else if(dir.equals("downright")) return Integer.parseInt(dis+"4");
-        else if(dir.equals("down")) return Integer.parseInt(dis+"5");
-        else if(dir.equals("downleft")) return Integer.parseInt(dis+"6");
-        else if(dir.equals("left")) return Integer.parseInt(dis+"7");
-        else if(dir.equals("upleft")) return Integer.parseInt(dis+"8");
-        else return 0;
+        return switch (dir) {
+            case "up" -> Integer.parseInt(dis + "1");
+            case "upright" -> Integer.parseInt(dis + "2");
+            case "right" -> Integer.parseInt(dis + "3");
+            case "downright" -> Integer.parseInt(dis + "4");
+            case "down" -> Integer.parseInt(dis + "5");
+            case "downleft" -> Integer.parseInt(dis + "6");
+            case "left" -> Integer.parseInt(dis + "7");
+            case "upleft" -> Integer.parseInt(dis + "8");
+            default -> 0;
+        };
     }
 
     @Override
@@ -153,62 +162,62 @@ public class HostImp implements Host{
         boolean notfound = true;
         if(dir.equals("up") && location[0]>1){
             for (Host h : organismInOrder) {
-                if (h.getlocation()[1] == location[1] && h.getlocation()[0]<location[0] ) {
-                    int a = ((location[0] - h.getlocation()[0])*10) + h.gettype();
+                if (h.getLocation()[1] == location[1] && h.getLocation()[0]<location[0] ) {
+                    int a = ((location[0] - h.getLocation()[0])*10) + h.getType();
                     if(a<ans) ans = a;
                 }
             }
         }else if (dir.equals("down") && location[0]<m){
             for (Host h : organismInOrder) {
-                if (h.getlocation()[1] == location[1] && h.getlocation()[0]>location[0] ) {
-                    int a =((h.getlocation()[0] - location[0])*10)+h.gettype();
+                if (h.getLocation()[1] == location[1] && h.getLocation()[0]>location[0] ) {
+                    int a =((h.getLocation()[0] - location[0])*10)+h.getType();
                     if(a<ans) ans = a;
                 }
             }
         }else if (dir.equals("left") && location[1]>0){
             for (Host h : organismInOrder) {
-                if (h.getlocation()[0] == location[0] && h.getlocation()[1]<location[1] ) {
-                   int a = ((location[1] - h.getlocation()[1])*10)+h.gettype();
+                if (h.getLocation()[0] == location[0] && h.getLocation()[1]<location[1] ) {
+                   int a = ((location[1] - h.getLocation()[1])*10)+h.getType();
                     if(a<ans) ans = a;
                 }
             }
         }else if (dir.equals("right") && location[1]<n){
             for (Host h : organismInOrder) {
-                if (h.getlocation()[0] == location[0] && h.getlocation()[1]>location[1] ) {
-                    int a =((h.getlocation()[1] - location[1])*10)+h.gettype();
+                if (h.getLocation()[0] == location[0] && h.getLocation()[1]>location[1] ) {
+                    int a =((h.getLocation()[1] - location[1])*10)+h.getType();
                     if(a<ans) ans = a;
                 }
             }
         }else if (dir.equals("upleft") && location[0]>1 && location[1]>0){
             for (Host h : organismInOrder) {
-                if (location[0] - h.getlocation()[0] == location[1] - h.getlocation()[1]) {
-                    int a = ((location[0] - h.getlocation()[0])*10)+h.gettype();
+                if (location[0] - h.getLocation()[0] == location[1] - h.getLocation()[1]) {
+                    int a = ((location[0] - h.getLocation()[0])*10)+h.getType();
                     if(a<ans) ans = a;
                 }
             }
         }else if(dir.equals("upright") && location[0]>1 && location[1]<n){
             for (Host h : organismInOrder) {
-                if (location[0]-h.getlocation()[0] == h.getlocation()[1]-location[1] ) {
-                    int a = ((location[0] - h.getlocation()[0])*10)+h.gettype();
+                if (location[0]-h.getLocation()[0] == h.getLocation()[1]-location[1] ) {
+                    int a = ((location[0] - h.getLocation()[0])*10)+h.getType();
                     if(a<ans) ans = a;
                 }
             }
         }else if (dir.equals("downleft") && location[0]<m && location[1]>0){
             for (Host h : organismInOrder) {
-                if (h.getlocation()[0] - location[0] == location[1] - h.getlocation()[1]) {
-                    int a = ((h.getlocation()[0] - location[0])*10)+h.gettype();
+                if (h.getLocation()[0] - location[0] == location[1] - h.getLocation()[1]) {
+                    int a = ((h.getLocation()[0] - location[0])*10)+h.getType();
                     if(a<ans) ans = a;
                 }
             }
         }else if (dir.equals("downright") && location[0]<m && location[1]<n){
             for (Host h : organismInOrder) {
-                if (h.getlocation()[0] - location[0] == h.getlocation()[1] - location[1]) {
-                    int a = ((h.getlocation()[0] - location[0])*10)+h.gettype();
+                if (h.getLocation()[0] - location[0] == h.getLocation()[1] - location[1]) {
+                    int a = ((h.getLocation()[0] - location[0])*10)+h.getType();
                     if(a<ans) ans = a;
                 }
             }
         }else{
-            System.out.println("worng direction");
+            System.out.println("Wrong direction!");
         }
         if(ans == m*n*10) return 0;
         else return ans;

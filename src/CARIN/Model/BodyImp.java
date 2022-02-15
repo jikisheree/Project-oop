@@ -45,7 +45,7 @@ public class BodyImp implements Body{
         this.virusHealth = virusHealth;
         this.virusAttack = virusAttack;
         this.virusGain = virusGain;
-        this.order = 1;
+        this.order = 0;
         this.geneticCode = geneticCode;
     }
     private void buildField(){
@@ -57,8 +57,8 @@ public class BodyImp implements Body{
     }
 
     private Host randomAnti(int[] location) {
-        int x = (int) (Math.random() * 3) + 1;
-        return new Antibody(geneticCode.get(x), antiHealth, antiAttack, antiGain, moveCost, antiCredit, location, m, n, organismInOrder, cellLoc,this);
+        int x = (int) (Math.random() * geneticCode.size());
+        return new Antibody(geneticCode.get(x), antiHealth, antiAttack, antiGain, moveCost, location, m, n, organismInOrder, cellLoc,this);
     }
 
     private Host randomVirus(int[] location) {
@@ -124,6 +124,7 @@ public class BodyImp implements Body{
         Host current;
         for(int i=1; i<(order-1); i++){
             current = organismInOrder.get(i);
+            current.eval();
         }
     }
 
@@ -153,6 +154,11 @@ public class BodyImp implements Body{
     @Override
     public int getAntibodyNum() {
         return antibodyNum;
+    }
+
+    @Override
+    public void setAntiCredit() {
+        antiCredit+=placeCost;
     }
 
 }
