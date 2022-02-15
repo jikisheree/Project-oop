@@ -1,7 +1,7 @@
 package CARIN.Model;
 
 public interface Host {
-    void shoot(String Location);
+    void shoot(String direction);
     // must be Overridden to do nothing in Virus classes
     void move(String newLocation);
     int getHealth();
@@ -9,4 +9,6 @@ public interface Host {
     int getNearest();
     int getNearBy(String direction);
     void move(int[] newLocation);
+    int[] getlocation();
+    int gettype();
 }
