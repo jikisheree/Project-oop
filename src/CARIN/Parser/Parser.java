@@ -151,6 +151,7 @@ public class Parser {
     public Expr parseFactor() throws SyntaxError{
         Expr e = parsePower();
         while(tkz.peek("^")){
+                tkz.consume("^");
                 e = new Arithmetic(e,"^",parsePower());
         }
         return  e;
@@ -196,8 +197,8 @@ public class Parser {
 
     public static void main(String[] args) {
         // example genetic code in spec doc
-        String gene = "virusLoc = 14 " +
-                "if (virusLoc / 10 - 1) " +
+        String gene = "virusLoc = 50 " +
+                "if (virusLoc / 10 - 2^2) " +
                 "then " +
                 "  if (virusLoc % 10 - 7) then move upleft " +
                 "  else if (virusLoc % 10 - 6) then move left " +
