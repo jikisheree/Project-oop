@@ -15,12 +15,13 @@ public class BodyImp implements Body{
     int m, n;
     int order;
     private int virusNum, antibodyNum;
-    List<String> geneticCode;
-
+    List<String> geneticCodeAnti;
+    List<String> geneticCodeVirus;
     // input from config file
     // assume m and n is <=10 first
     public BodyImp(
-            List<String> geneticCode,
+            List<String> geneticCodeAnti,
+            List<String> geneticCodeVirus,
             int m, int n,
             int antiCredit,
             int placeCost,
@@ -46,7 +47,8 @@ public class BodyImp implements Body{
         this.virusAttack = virusAttack;
         this.virusGain = virusGain;
         this.order = 0;
-        this.geneticCode = geneticCode;
+        this.geneticCodeAnti = geneticCodeAnti;
+        this.geneticCodeVirus = geneticCodeVirus;
     }
     private void buildField(){
         for (int i=0;i<m;i++){
@@ -57,13 +59,13 @@ public class BodyImp implements Body{
     }
 
     private Host randomAnti(int[] location) {
-        int x = (int) (Math.random() * geneticCode.size());
-        return new Antibody(geneticCode.get(x), antiHealth, antiAttack, antiGain, moveCost, location, m, n, organismInOrder, cellLoc,this);
+        int x = (int) (Math.random() * geneticCodeAnti.size());
+        return new Antibody(geneticCodeAnti.get(x), antiHealth, antiAttack, antiGain, moveCost, location, m, n, organismInOrder, cellLoc,this);
     }
 
     private Host randomVirus(int[] location) {
-        int x = (int) (Math.random() * geneticCode.size());
-        return new Virus(geneticCode.get(x), antiHealth, antiAttack, antiGain, location, m, n, organismInOrder, cellLoc);
+        int x = (int) (Math.random() * geneticCodeVirus.size());
+        return new Virus(geneticCodeVirus.get(x), antiHealth, antiAttack, antiGain, location, m, n, organismInOrder, cellLoc);
     }
 
     private void addToCellLoc(int[] location){
@@ -74,10 +76,11 @@ public class BodyImp implements Body{
         cellLoc[newLocation[0]][newLocation[1]] = order;
     }
 
+    // bug: this part does not random
     private int[] randomLocation(){
         int[] location = new int[2];
-        location[0] = (int) (Math.random() * this.m) + 1;
-        location[1] = (int) (Math.random() * this.n) + 1;
+        location[0] = (int) (Math.random() * 4) + 1;
+        location[1] = (int) (Math.random() * 4) + 1;
         return location;
     }
 
@@ -106,6 +109,8 @@ public class BodyImp implements Body{
         int[] location = randomLocation();
         this.organismInOrder.add(randomVirus(location));
         addToCellLoc(location);
+        int loc = Integer.parseInt((location[0])+String.valueOf(location[1]));
+        System.out.println("added virus to location "+ loc);
         virusNum++;
         order++;
     }
