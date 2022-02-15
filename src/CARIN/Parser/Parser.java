@@ -46,18 +46,19 @@ public class Parser {
         Program s;
             if (tkz.peek("if")) s = parseIf();
             else if (tkz.peek("while")) s = parseWhile();
-            // BlockStatement → { Statement* }
-            else if (tkz.peek("{")) {
-                tkz.consume("{");
-                while (!tkz.peek("}")) {
-                    s = parseStatement();
-                    this.statement.add(s); /*to be fixed*/
-                }
-                tkz.consume("}");
-                return new Statement("none");
-            }
+            else if (tkz.peek("{")) s = parseBlock();
             else s = parseCommand();
         return s;
+    }
+    // BlockStatement → { Statement* }
+    public Program parseBlock() throws SyntaxError{
+        tkz.consume("{");
+        while (!tkz.peek("}")) {
+            new Statement("block",parseStatement(),statement);
+            /*block fixed*/
+        }
+        tkz.consume("}");
+        return new Statement("none");
     }
     // IfStatement → if ( Expression ) then Statement else Statement
     public Program parseIf() throws SyntaxError{
@@ -195,7 +196,7 @@ public class Parser {
 
     public static void main(String[] args) {
         // example genetic code in spec doc
-        String gene = "virusLoc = 28 " +
+        String gene = "virusLoc = 14 " +
                 "if (virusLoc / 10 - 1) " +
                 "then " +
                 "  if (virusLoc % 10 - 7) then move upleft " +
