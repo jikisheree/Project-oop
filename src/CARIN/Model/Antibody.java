@@ -4,20 +4,15 @@ import CARIN.Parser.Parser;
 import java.util.*;
 
 public class Antibody extends HostImp{
-    Body body;
 
     public Antibody(String geneticCode, int health, int attackDamage,int gain,int moveCost,
-                    int[] location,int m,int n, List<Host> organismInOrder,int[][] cellLoc,Body body) {
+                    int[] location,Body body) {
         this.health = health;
         this.attackDamage = attackDamage;
         this.gain = gain;
         this.moveCost = moveCost;
         this.location = location;
         this.geneticCode = geneticCode;
-        this.m = m;
-        this.n = n;
-        this.organismInOrder = organismInOrder;
-        this.cellLoc = cellLoc;
         this.body = body;
         this.identifier = new HashMap<>();
         this.parser = new Parser(geneticCode, this);
@@ -41,10 +36,7 @@ public class Antibody extends HostImp{
     }
     @Override
     public void isDeath(Host virus){
-        cellLoc[location[0]][location[1]] = 0;
-        organismInOrder.remove(this);
-        int[] loc = {location[0], location[1]};
-        body.addVirus((Virus) virus,loc);
+        body.addAntiTurnVirus(virus.getGeneticCode(),location);
     }
 
 

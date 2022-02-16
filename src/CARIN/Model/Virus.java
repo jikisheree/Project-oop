@@ -5,17 +5,13 @@ import java.util.*;
 
 public class Virus extends HostImp {
 
-    public Virus(String geneticCode, int health, int attackDamage,int gain,
-                 int[] location,int m,int n, List<Host> organismInOrder,int[][] cellLoc) {
+    public Virus(String geneticCode, int health, int attackDamage,int gain, int[] location, Body body) {
         this.health = health;
         this.attackDamage = attackDamage;
         this.gain = gain;
         this.location = location;
         this.geneticCode = geneticCode;
-        this.m = m;
-        this.n = n;
-        this.organismInOrder = organismInOrder;
-        this.cellLoc = cellLoc;
+        this.body = body;
         this.identifier = new HashMap<>();
         this.parser = new Parser(geneticCode, this);
     }
@@ -31,10 +27,7 @@ public class Virus extends HostImp {
     }
     @Override
     public void isDeath(Host antibody){
-        cellLoc[location[0]][location[1]] = 0;
-        organismInOrder.remove(this);
-        Antibody anti = (Antibody) antibody;
-        anti.body.setAntiCredit();
+        body.addVirusTurnAntiCredit(location);
     }
 
 }

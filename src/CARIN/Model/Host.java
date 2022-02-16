@@ -17,4 +17,5 @@ public interface Host {
     void isDeath(Host host);
     void eval();
     HashMap<String, Expr> getIdentifier();
+    String getGeneticCode();
 }

@@ -9,11 +9,10 @@ public class HostImp implements Host{
 
     int health, attackDamage, gain, moveCost, m, n;
     int[] location = new int[2];
-    int[][] cellLoc;
     String geneticCode;
-    List<Host> organismInOrder;
     HashMap<String, Expr> identifier;
     Parser parser;
+    Body body;
 
     @Override
     public void shoot(String direction) {
@@ -45,7 +44,7 @@ public class HostImp implements Host{
             System.out.println("can't shoot");
         }
         if(!Arrays.equals(shootloc, location)) {
-            for (Host h : organismInOrder) {
+            for (Host h : body.getOrganism()) {
                 if (Arrays.equals(h.getLocation(), shootloc)) {
                     if(h.setHealth(attackDamage) && this.getType() == 2 && h.getType() == 1 ){
                         h.isDeath(this);
@@ -112,6 +111,11 @@ public class HostImp implements Host{
         return identifier;
     }
 
+    @Override
+    public String getGeneticCode() {
+        return geneticCode;
+    }
+
     public void cantMove(){}
 
     @Override
@@ -161,56 +165,56 @@ public class HostImp implements Host{
         int ans = m*n*10;
         boolean notfound = true;
         if(dir.equals("up") && location[0]>1){
-            for (Host h : organismInOrder) {
+            for (Host h : body.getOrganism()) {
                 if (h.getLocation()[1] == location[1] && h.getLocation()[0]<location[0] ) {
                     int a = ((location[0] - h.getLocation()[0])*10) + h.getType();
                     if(a<ans) ans = a;
                 }
             }
         }else if (dir.equals("down") && location[0]<m){
-            for (Host h : organismInOrder) {
+            for (Host h : body.getOrganism()) {
                 if (h.getLocation()[1] == location[1] && h.getLocation()[0]>location[0] ) {
                     int a =((h.getLocation()[0] - location[0])*10)+h.getType();
                     if(a<ans) ans = a;
                 }
             }
         }else if (dir.equals("left") && location[1]>0){
-            for (Host h : organismInOrder) {
+            for (Host h : body.getOrganism()) {
                 if (h.getLocation()[0] == location[0] && h.getLocation()[1]<location[1] ) {
                    int a = ((location[1] - h.getLocation()[1])*10)+h.getType();
                     if(a<ans) ans = a;
                 }
             }
         }else if (dir.equals("right") && location[1]<n){
-            for (Host h : organismInOrder) {
+            for (Host h : body.getOrganism()) {
                 if (h.getLocation()[0] == location[0] && h.getLocation()[1]>location[1] ) {
                     int a =((h.getLocation()[1] - location[1])*10)+h.getType();
                     if(a<ans) ans = a;
                 }
             }
         }else if (dir.equals("upleft") && location[0]>1 && location[1]>0){
-            for (Host h : organismInOrder) {
+            for (Host h : body.getOrganism()) {
                 if (location[0] - h.getLocation()[0] == location[1] - h.getLocation()[1]) {
                     int a = ((location[0] - h.getLocation()[0])*10)+h.getType();
                     if(a<ans) ans = a;
                 }
             }
         }else if(dir.equals("upright") && location[0]>1 && location[1]<n){
-            for (Host h : organismInOrder) {
+            for (Host h : body.getOrganism()) {
                 if (location[0]-h.getLocation()[0] == h.getLocation()[1]-location[1] ) {
                     int a = ((location[0] - h.getLocation()[0])*10)+h.getType();
                     if(a<ans) ans = a;
                 }
             }
         }else if (dir.equals("downleft") && location[0]<m && location[1]>0){
-            for (Host h : organismInOrder) {
+            for (Host h : body.getOrganism()) {
                 if (h.getLocation()[0] - location[0] == location[1] - h.getLocation()[1]) {
                     int a = ((h.getLocation()[0] - location[0])*10)+h.getType();
                     if(a<ans) ans = a;
                 }
             }
         }else if (dir.equals("downright") && location[0]<m && location[1]<n){
-            for (Host h : organismInOrder) {
+            for (Host h : body.getOrganism()) {
                 if (h.getLocation()[0] - location[0] == h.getLocation()[1] - location[1]) {
                     int a = ((h.getLocation()[0] - location[0])*10)+h.getType();
                     if(a<ans) ans = a;

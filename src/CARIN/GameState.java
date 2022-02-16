@@ -80,7 +80,7 @@ public class GameState {
         LinkedList<String> geneticCodeVirus = new LinkedList<>();
         geneticCodeVirus.add(gene);
         geneticCodeAnti.add(gene2);
-        body = new BodyImp(geneticCodeAnti,geneticCodeVirus,5, 5, 20,2, 1, 0.5, 20,
+        body = new BodyImp(geneticCodeAnti,geneticCodeVirus,5, 5, 20,2, 1, 0.8, 20,
                 5, 2, 20, 3, 1);
         body.addVirus();
         body.addAntibody(new int[]{2, 3});
