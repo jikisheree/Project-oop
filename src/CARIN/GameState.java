@@ -11,7 +11,7 @@ public class GameState {
     public static void main(String[] args){
 
         String gene = "virusLoc = virus " +
-                "if (virusLoc / 10 - 2^2) " +
+                "if (virusLoc / 10 - 1) " +
                 "then " +
                 "  if (virusLoc % 10 - 7) then move upleft " +
                 "  else if (virusLoc % 10 - 6) then move left " +
@@ -44,7 +44,7 @@ public class GameState {
                 "  else move up " +
                 "} ";
         String gene2 = "antiLoc = antibody " +
-                "if (antiLoc / 10 - 2^2) " +
+                "if (antiLoc / 10 - 1) " +
                 "then " +
                 "  if (antiLoc % 10 - 7) then move upleft " +
                 "  else if (antiLoc % 10 - 6) then move left " +

@@ -81,7 +81,7 @@ public class HostImp implements Host{
             location[1]+=1;
         }else this.cantMove();
 
-        System.out.println("moved to " + dir);
+        System.out.println("moved to " + location[0] + location[1]);
     }
 
     @Override
@@ -131,31 +131,77 @@ public class HostImp implements Host{
 
     @Override
     public int getNearest() {
-        Map<Integer,String> alldir = new HashMap<>();
-        int[] distance = new int [8];
-        int i = 0;
-        String[] direction = {"up","down","right","left","upleft","downleft","upright","downright"};
-        for(String dir : direction){
-            int x = this.getNearBy(dir);
-            if(x!=0) {
-                alldir.put(x, dir);
-                distance[i] = x;
-                i++;
+        List<Host>host = new LinkedList<>();
+        int ans = m*n*10;
+        String dir = "notfound";
+        for (Host h : body.getOrganism()) {
+            if(h.getType() == this.getType()){
+                if(h != this)
+                host.add(h);
             }
         }
-        Arrays.sort(distance);
-        String dis = String.valueOf(distance[0]);
-        String dir = alldir.get(dis);
+        for(Host h : host) {
+            if(location[0] > 1 && h.getLocation()[1] == location[1] && h.getLocation()[0] < location[0]) {
+                int a = (location[0] - h.getLocation()[0]);
+                if (a < ans) {
+                    ans = a;
+                    dir = "up";
+                }
+            }else if (location[0] < m && h.getLocation()[1] == location[1] && h.getLocation()[0] > location[0]) {
+                int a = h.getLocation()[0] - location[0];
+                if (a < ans) {
+                    ans = a;
+                    dir = "down";
+                }
+            }else if (location[1] > 0 && h.getLocation()[0] == location[0] && h.getLocation()[1] < location[1]) {
+                 int a = location[1] - h.getLocation()[1];
+                if (a < ans) {
+                    ans = a;
+                    dir = "left";
+                }
+            }else if (location[1] < n && h.getLocation()[0] == location[0] && h.getLocation()[1] > location[1]) {
+                int a = ((h.getLocation()[1] - location[1]) * 10) + h.getType();
+                if (a < ans) {
+                    ans = a;
+                    dir = "right";
+                }
+            }else if (location[0] > 1 && location[1] > 0 && location[0] - h.getLocation()[0] == location[1] - h.getLocation()[1]) {
+                int a = location[0] - h.getLocation()[0];
+                if (a < ans){
+                    ans = a;
+                    dir  = "upleft";
+                }
+            }else if (location[0] > 1 && location[1] < n && location[0] - h.getLocation()[0] == h.getLocation()[1] - location[1]) {
+                int a = location[0] - h.getLocation()[0];
+                if (a < ans){
+                    ans = a;
+                    dir  = "upright";
+                }
+            }else if (location[0] < m && location[1] > 0 && h.getLocation()[0] - location[0] == location[1] - h.getLocation()[1]) {
+                int a = h.getLocation()[0] - location[0];
+                if (a < ans){
+                    ans = a;
+                    dir  = "downleft";
+                }
+            }else if (location[0] < m && location[1] < n && h.getLocation()[0] - location[0] == h.getLocation()[1] - location[1]) {
+                int a = h.getLocation()[0] - location[0];
+                if (a < ans){
+                    ans = a;
+                    dir  = "downright";
+                }
+            }
+        }
+        String dis = String.valueOf(ans);
         return switch (dir) {
-            case "up" -> Integer.parseInt(dis + "1");
-            case "upright" -> Integer.parseInt(dis + "2");
-            case "right" -> Integer.parseInt(dis + "3");
-            case "downright" -> Integer.parseInt(dis + "4");
-            case "down" -> Integer.parseInt(dis + "5");
-            case "downleft" -> Integer.parseInt(dis + "6");
-            case "left" -> Integer.parseInt(dis + "7");
-            case "upleft" -> Integer.parseInt(dis + "8");
-            default -> 0;
+                case "up" -> Integer.parseInt(dis + "1");
+                case "upright" -> Integer.parseInt(dis + "2");
+                case "right" -> Integer.parseInt(dis + "3");
+                case "downright" -> Integer.parseInt(dis + "4");
+                case "down" -> Integer.parseInt(dis + "5");
+                case "downleft" -> Integer.parseInt(dis + "6");
+                case "left" -> Integer.parseInt(dis + "7");
+                case "upleft" -> Integer.parseInt(dis + "8");
+                default -> 0;
         };
     }
 
@@ -163,7 +209,6 @@ public class HostImp implements Host{
     public int getNearBy(String direction) {
         String dir = direction.toLowerCase();
         int ans = m*n*10;
-        boolean notfound = true;
         if(dir.equals("up") && location[0]>1){
             for (Host h : body.getOrganism()) {
                 if (h.getLocation()[1] == location[1] && h.getLocation()[0]<location[0] ) {

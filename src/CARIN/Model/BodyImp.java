@@ -195,6 +195,13 @@ public class BodyImp implements Body{
     public int getAntibodyNum() {
         return antibodyNum;
     }
+
+    @Override
+    public int[] getmn() {
+        int mn[] = {m,n};
+        return mn;
+    }
+
     private void removeOrganism(int[] location) {
         int m = location[0];
         int n = location[1];

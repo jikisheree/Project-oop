@@ -12,6 +12,8 @@ public class Virus extends HostImp {
         this.location = location;
         this.geneticCode = geneticCode;
         this.body = body;
+        this.m = this.body.getmn()[0];
+        this.n = this.body.getmn()[1];
         this.identifier = new HashMap<>();
         this.parser = new Parser(geneticCode, this);
     }
