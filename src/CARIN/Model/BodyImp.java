@@ -181,7 +181,7 @@ public class BodyImp implements Body{
     }
     // when an antibody is moved by player
     @Override
-    public void moveAntibody(int[] location, int[] newLocation) {
+    public void move(int[] location, int[] newLocation) {
         Host host = findOrganByLocation(location);
         host.move(newLocation);
         int order = organismInOrder.indexOf(host);

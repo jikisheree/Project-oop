@@ -59,33 +59,46 @@ public class HostImp implements Host{
     @Override
     public void move(String newLocation) {
         String dir = newLocation.toLowerCase();
+        int newLoc[] = {location[0], location[1]};
         if(dir.equals("up") && location[0]>1 ){
-            location[0]-=1;
+            newLoc[0]-=1;
         }else if (dir.equals("down") && location[0]<m){
-            location[0]+=1;
+            newLoc[0]+=1;
         }else if (dir.equals("left") && location[1]>0){
-            location[1]-=1;
+            newLoc[1]-=1;
         }else if (dir.equals("right") && location[1]<n){
-            location[1]+=1;
+            newLoc[1]+=1;
         }else if (dir.equals("upleft") && location[0]>1 && location[1]>0){
-            location[0]-=1;
-            location[1]-=1;
+            newLoc[0]-=1;
+            newLoc[1]-=1;
         }else if(dir.equals("upright") && location[0]>1 && location[1]<n){
-            location[0]-=1;
-            location[1]+=1;
+            newLoc[0]-=1;
+            newLoc[1]+=1;
         }else if (dir.equals("downleft") && location[0]<m && location[1]>0){
-            location[0]+=1;
-            location[1]-=1;
+            newLoc[0]+=1;
+            newLoc[1]-=1;
         }else if (dir.equals("downright") && location[0]<m && location[1]<n){
-            location[0]+=1;
-            location[1]+=1;
+            newLoc[0]+=1;
+            newLoc[1]+=1;
         }else this.cantMove();
-
-        System.out.println("moved to " + location[0] + location[1]);
+        if(newLoc[0]!=location[0] || newLoc[1]!=location[1]){
+            body.move(location,newLoc);
+        }
     }
 
     @Override
-    public void move(int[] newLocation) { }
+    public void move(int[] newLocation) {
+        boolean canmove = true;
+        for (Host h : body.getOrganism()) {
+            if(h.getLocation()[0] == newLocation[0] && h.getLocation()[1] == newLocation[1]){
+                canmove = false;}
+        }
+        if(canmove){
+            System.out.println(location[0] +""+ location[1] + " moved to " + newLocation[0] + newLocation[1]);
+            location = newLocation;
+            health -= moveCost;
+        }else this.cantMove();
+    }
 
     @Override
     public int[] getLocation() {
@@ -137,53 +150,53 @@ public class HostImp implements Host{
         for (Host h : body.getOrganism()) {
             if(h.getType() == this.getType()){
                 if(h != this)
-                host.add(h);
+                    host.add(h);
             }
         }
         for(Host h : host) {
-            if(location[0] > 1 && h.getLocation()[1] == location[1] && h.getLocation()[0] < location[0]) {
+            if(location[0] > 1 && h.getLocation()[1] == location[1] && h.getLocation()[0] < location[0] && (location[0] - h.getLocation()[0]) > 0 ) {
                 int a = (location[0] - h.getLocation()[0]);
                 if (a < ans) {
                     ans = a;
                     dir = "up";
                 }
-            }else if (location[0] < m && h.getLocation()[1] == location[1] && h.getLocation()[0] > location[0]) {
+            }else if (location[0] < m && h.getLocation()[1] == location[1] && h.getLocation()[0] > location[0] && h.getLocation()[0] - location[0] > 0) {
                 int a = h.getLocation()[0] - location[0];
                 if (a < ans) {
                     ans = a;
                     dir = "down";
                 }
-            }else if (location[1] > 0 && h.getLocation()[0] == location[0] && h.getLocation()[1] < location[1]) {
-                 int a = location[1] - h.getLocation()[1];
+            }else if (location[1] > 1 && h.getLocation()[0] == location[0] && h.getLocation()[1] < location[1] && location[1] - h.getLocation()[1] > 0) {
+                int a = location[1] - h.getLocation()[1];
                 if (a < ans) {
                     ans = a;
                     dir = "left";
                 }
-            }else if (location[1] < n && h.getLocation()[0] == location[0] && h.getLocation()[1] > location[1]) {
+            }else if (location[1] < n && h.getLocation()[0] == location[0] && h.getLocation()[1] > location[1] && h.getLocation()[1] - location[1] > 0) {
                 int a = h.getLocation()[1] - location[1];
                 if (a < ans) {
                     ans = a;
                     dir = "right";
                 }
-            }else if (location[0] > 1 && location[1] > 0 && location[0] - h.getLocation()[0] == location[1] - h.getLocation()[1]) {
+            }else if (location[0] > 1 && location[1] > 1 && location[0] - h.getLocation()[0] == location[1] - h.getLocation()[1] && location[0] - h.getLocation()[0] > 0) {
                 int a = location[0] - h.getLocation()[0];
                 if (a < ans){
                     ans = a;
                     dir  = "upleft";
                 }
-            }else if (location[0] > 1 && location[1] < n && location[0] - h.getLocation()[0] == h.getLocation()[1] - location[1]) {
+            }else if (location[0] > 1 && location[1] < n && location[0] - h.getLocation()[0] == h.getLocation()[1] - location[1] && location[0] - h.getLocation()[0] > 0) {
                 int a = location[0] - h.getLocation()[0];
                 if (a < ans){
                     ans = a;
                     dir  = "upright";
                 }
-            }else if (location[0] < m && location[1] > 0 && h.getLocation()[0] - location[0] == location[1] - h.getLocation()[1]) {
+            }else if (location[0] < m && location[1] > 1 && h.getLocation()[0] - location[0] == location[1] - h.getLocation()[1] && h.getLocation()[0] - location[0] > 0) {
                 int a = h.getLocation()[0] - location[0];
                 if (a < ans){
                     ans = a;
                     dir  = "downleft";
                 }
-            }else if (location[0] < m && location[1] < n && h.getLocation()[0] - location[0] == h.getLocation()[1] - location[1]) {
+            }else if (location[0] < m && location[1] < n && h.getLocation()[0] - location[0] == h.getLocation()[1] - location[1] && h.getLocation()[0] - location[0] > 0) {
                 int a = h.getLocation()[0] - location[0];
                 if (a < ans){
                     ans = a;
@@ -193,15 +206,15 @@ public class HostImp implements Host{
         }
         String dis = String.valueOf(ans);
         return switch (dir) {
-                case "up" -> Integer.parseInt(dis + "1");
-                case "upright" -> Integer.parseInt(dis + "2");
-                case "right" -> Integer.parseInt(dis + "3");
-                case "downright" -> Integer.parseInt(dis + "4");
-                case "down" -> Integer.parseInt(dis + "5");
-                case "downleft" -> Integer.parseInt(dis + "6");
-                case "left" -> Integer.parseInt(dis + "7");
-                case "upleft" -> Integer.parseInt(dis + "8");
-                default -> 0;
+            case "up" -> Integer.parseInt(dis + "1");
+            case "upright" -> Integer.parseInt(dis + "2");
+            case "right" -> Integer.parseInt(dis + "3");
+            case "downright" -> Integer.parseInt(dis + "4");
+            case "down" -> Integer.parseInt(dis + "5");
+            case "downleft" -> Integer.parseInt(dis + "6");
+            case "left" -> Integer.parseInt(dis + "7");
+            case "upleft" -> Integer.parseInt(dis + "8");
+            default -> 0;
         };
     }
 
@@ -226,7 +239,7 @@ public class HostImp implements Host{
         }else if (dir.equals("left") && location[1]>0){
             for (Host h : body.getOrganism()) {
                 if (h.getLocation()[0] == location[0] && h.getLocation()[1]<location[1] ) {
-                   int a = ((location[1] - h.getLocation()[1])*10)+h.getType();
+                    int a = ((location[1] - h.getLocation()[1])*10)+h.getType();
                     if(a<ans) ans = a;
                 }
             }

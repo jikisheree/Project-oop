@@ -10,7 +10,7 @@ public interface Body {
     void run();
     int[][] getCellLoc();
     List<Host> getOrganism();
-    void moveAntibody(int[] location, int[] newLocation);
+    void move(int[] location, int[] newLocation);
     int getVirusNum();
     int getAntibodyNum();
     int[] getmn();

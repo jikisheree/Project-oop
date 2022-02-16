@@ -31,12 +31,6 @@ public class Antibody extends HostImp{
     }
 
     @Override
-    public void move(int[] newLocation){
-        location = newLocation;
-        health -= moveCost;
-        System.out.println("move to " + newLocation[0] + newLocation[1]);
-    }
-    @Override
     public void isDeath(Host virus){
         body.addAntiTurnVirus(virus.getGeneticCode(),location);
     }
