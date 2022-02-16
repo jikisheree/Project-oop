@@ -7,7 +7,7 @@ public class Statement implements Program{
     Expr condition;
     Program then;
     Program el;
-    List<Program> statement;
+    List<Program> block;
     // if constructor
     public Statement(String type,Expr con,Program then, Program el){
         this.type = type;
@@ -22,14 +22,11 @@ public class Statement implements Program{
         this.then = then;
     }
     // block constructor
-    public Statement(String type,Program block, List<Program> statement){
+    public Statement(String type,List<Program> block){
         this.type = type;
-        then = block;
-        this.statement = statement;
+        this.block = block;
     }
-    public Statement(String type){
-        this.type = type;
-    }
+
 
     public void eval() {
         Boolean check = null;
@@ -46,7 +43,9 @@ public class Statement implements Program{
                 }
                 break;
             case "block":
-                statement.add(then);
+                for(Program inBlock:block){
+                    inBlock.eval();
+                }
                 break;
             default:
                 break;

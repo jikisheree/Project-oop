@@ -17,7 +17,7 @@ public class Parser {
     public Parser(String src, Host host){
         this.tkz = new Tokenizer(src);
         this.host = host;
-        idenKeep = host.getIdentifier();
+        idenKeep = new HashMap<>();
         this.statement = new LinkedList<>();
         parse();
     }
@@ -39,7 +39,6 @@ public class Parser {
     public void parseProgram() {
         while(!tkz.peek(""))
             this.statement.add(parseStatement());
-
     }
     // Statement → Command | BlockStatement | IfStatement | WhileStatement
     public Program parseStatement() throws SyntaxError{
@@ -52,13 +51,14 @@ public class Parser {
     }
     // BlockStatement → { Statement* }
     public Program parseBlock() throws SyntaxError{
+        List<Program> block = new LinkedList<>();
         tkz.consume("{");
         while (!tkz.peek("}")) {
-            new Statement("block",parseStatement(),statement);
-            /*block fixed*/
+            block.add(parseStatement());
+            /*block to be fixed*/
         }
         tkz.consume("}");
-        return new Statement("none");
+        return new Statement("block", block);
     }
     // IfStatement → if ( Expression ) then Statement else Statement
     public Program parseIf() throws SyntaxError{
@@ -196,8 +196,8 @@ public class Parser {
     }
 
     public static void main(String[] args) {
-        // example genetic code in spec doc
-        String gene = "virusLoc = 50 " +
+//         example genetic code in spec doc
+        String gene = "virusLoc = 0 " +
                 "if (virusLoc / 10 - 2^2) " +
                 "then " +
                 "  if (virusLoc % 10 - 7) then move upleft " +
@@ -220,15 +220,9 @@ public class Parser {
                 "  else shoot up " +
                 " else " +
                 "{ " +
-                "  dir = 10 % 8 " +
-                "  if (dir - 6) then move upleft " +
-                "  else if (dir - 5) then move left " +
-                "  else if (dir - 4) then move downleft " +
-                "  else if (dir - 3) then move down " +
-                "  else if (dir - 2) then move downright " +
-                "  else if (dir - 1) then move right " +
-                "  else if (dir) then move upright " +
-                "  else move up " +
+                "  move upleft " +
+                "  move left " +
+                "  move downleft " +
                 "} ";
         Parser parser = new Parser(gene, new HostImp());
         parser.eval();

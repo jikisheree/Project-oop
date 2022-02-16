@@ -160,7 +160,7 @@ public class HostImp implements Host{
                     dir = "left";
                 }
             }else if (location[1] < n && h.getLocation()[0] == location[0] && h.getLocation()[1] > location[1]) {
-                int a = ((h.getLocation()[1] - location[1]) * 10) + h.getType();
+                int a = h.getLocation()[1] - location[1];
                 if (a < ans) {
                     ans = a;
                     dir = "right";
