@@ -1,4 +1,5 @@
 package CARIN.Model;
+import CARIN.Parser.Number;
 import CARIN.Parser.Parser;
 
 import java.util.*;
@@ -15,6 +16,7 @@ public class Virus extends HostImp {
         this.m = this.body.getmn()[0];
         this.n = this.body.getmn()[1];
         this.identifier = new HashMap<>();
+        this.identifier.put("random", new Number((int)(Math.random()*99)));
         this.parser = new Parser(geneticCode, this);
     }
 
