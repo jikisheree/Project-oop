@@ -96,12 +96,21 @@ public class BodyImp implements Body{
         return location;
     }
     //
-    private Host findOrganByLocation(int[] location){
+    public Host findOrganByLocation(int[] location){
         int m = location[0];
         int n = location[1];
         int order = cellLoc[m][n];
         return organismInOrder.get(order-1);
     }
+
+    @Override
+    public boolean findhost(int[] location) {
+        int m = location[0];
+        int n = location[1];
+        int order = cellLoc[m][n];
+        return order>0 ;
+    }
+
     // adding new antibody
     @Override
     public void addAntibody(int[] location) {

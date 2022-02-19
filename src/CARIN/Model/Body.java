@@ -15,4 +15,6 @@ public interface Body {
     int getAntibodyNum();
     int[] getmn();
     void addvirus(int[] location);
+    Host findOrganByLocation(int[] location);
+    boolean findhost(int[] location);
 }

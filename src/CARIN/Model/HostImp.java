@@ -46,7 +46,7 @@ public class HostImp implements Host{
         if(!Arrays.equals(shootloc, location)) {
             for (Host h : body.getOrganism()) {
                 if (Arrays.equals(h.getLocation(), shootloc)) {
-                    if(h.setHealth(attackDamage) && this.getType() == 2 && h.getType() == 1 ){
+                    if(h.setHealth(attackDamage)){
                         h.isDeath(this);
                     }
                     health+=gain;
@@ -59,7 +59,7 @@ public class HostImp implements Host{
     @Override
     public void move(String newLocation) {
         String dir = newLocation.toLowerCase();
-        int newLoc[] = {location[0], location[1]};
+        int[] newLoc = {location[0], location[1]};
         if(dir.equals("up") && location[0]>1 ){
             newLoc[0]-=1;
         }else if (dir.equals("down") && location[0]<m){
@@ -221,72 +221,75 @@ public class HostImp implements Host{
     @Override
     public int getNearBy(String direction) {
         String dir = direction.toLowerCase();
-        List<Host>host = new LinkedList<>();
-        int ans = m*n*10;
-        for (Host h : body.getOrganism()) {
-           if(h != this) host.add(h);
+        int ans = 0;
+        int[] loc = {location[0] , location[1]};
+        switch (dir) {
+            case "up":
+                while (ans == 0 && loc[0] > 1) {
+                    loc[0]--;
+                    if (body.findhost(loc))
+                        ans = ((location[0] - loc[0]) * 10) + body.findOrganByLocation(loc).getType();
+                }
+                break;
+            case "down":
+                while (ans == 0 && loc[0] < m) {
+                    loc[0]++;
+                    if (body.findhost(loc))
+                        ans = ((loc[0] - location[0]) * 10) + body.findOrganByLocation(loc).getType();
+                }
+                break;
+            case "left":
+                while (ans == 0 && loc[1] > 1) {
+                    loc[1]--;
+                    if (body.findhost(loc))
+                        ans = ((location[1] - loc[1]) * 10) + body.findOrganByLocation(loc).getType();
+                }
+                break;
+            case "right":
+                while (ans == 0 && loc[1] < n) {
+                    loc[1]++;
+                    if (body.findhost(loc))
+                        ans = ((loc[1] - location[1]) * 10) + body.findOrganByLocation(loc).getType();
+                }
+                break;
+            case "upleft":
+                while (ans == 0 && loc[0] > 1 && loc[1] > 1) {
+                    loc[0]--;
+                    loc[1]--;
+                    if (body.findhost(loc))
+                        ans = ((location[0] - loc[0]) * 10) + body.findOrganByLocation(loc).getType();
+                }
+                break;
+            case "upright":
+                while (ans == 0 && loc[0] > 1 && loc[1] < n) {
+                    loc[0]--;
+                    loc[1]++;
+                    if (body.findhost(loc))
+                        ans = ((loc[1] - location[1]) * 10) + body.findOrganByLocation(loc).getType();
+                }
+                break;
+            case "downleft":
+                while (ans == 0 && loc[0] < m && loc[1] > 1) {
+                    loc[0]++;
+                    loc[1]--;
+                    if (body.findhost(loc))
+                        ans = ((location[1] - loc[1]) * 10) + body.findOrganByLocation(loc).getType();
+                }
+                break;
+            case "downright":
+                while (ans == 0 && loc[0] < m && loc[1] < n) {
+                    loc[0]++;
+                    loc[1]++;
+                    if (body.findhost(loc))
+                        ans = ((loc[0] - location[0]) * 10) + body.findOrganByLocation(loc).getType();
+                }
+                break;
+            default:
+                System.out.println("Wrong direction!");
+                break;
         }
-        if(dir.equals("up") && location[0]>1){
-            for (Host h : host) {
-                if (h.getLocation()[1] == location[1] && h.getLocation()[0]<location[0] ) {
-                    int a = ((location[0] - h.getLocation()[0])*10) + h.getType();
-                    if(a<ans && a>0) ans = a;
-                }
-            }
-        }else if (dir.equals("down") && location[0]<m){
-            for (Host h : host) {
-                if (h.getLocation()[1] == location[1] && h.getLocation()[0]>location[0] ) {
-                    int a =((h.getLocation()[0] - location[0])*10)+h.getType();
-                    if(a<ans && a>0) ans = a;
-                }
-            }
-        }else if (dir.equals("left") && location[1]>0){
-            for (Host h : host) {
-                if (h.getLocation()[0] == location[0] && h.getLocation()[1]<location[1] ) {
-                    int a = ((location[1] - h.getLocation()[1])*10)+h.getType();
-                    if(a<ans && a>0) ans = a;
-                }
-            }
-        }else if (dir.equals("right") && location[1]<n){
-            for (Host h : host) {
-                if (h.getLocation()[0] == location[0] && h.getLocation()[1]>location[1] ) {
-                    int a =((h.getLocation()[1] - location[1])*10)+h.getType();
-                    if(a<ans && a>0) ans = a;
-                }
-            }
-        }else if (dir.equals("upleft") && location[0]>1 && location[1]>0){
-            for (Host h : host) {
-                if (location[0] - h.getLocation()[0] == location[1] - h.getLocation()[1]) {
-                    int a = ((location[0] - h.getLocation()[0])*10)+h.getType();
-                    if(a<ans && a>0) ans = a;
-                }
-            }
-        }else if(dir.equals("upright") && location[0]>1 && location[1]<n){
-            for (Host h : host) {
-                if (location[0]-h.getLocation()[0] == h.getLocation()[1]-location[1] ) {
-                    int a = ((location[0] - h.getLocation()[0])*10)+h.getType();
-                    if(a<ans && a>0) ans = a;
-                }
-            }
-        }else if (dir.equals("downleft") && location[0]<m && location[1]>0){
-            for (Host h : host) {
-                if (h.getLocation()[0] - location[0] == location[1] - h.getLocation()[1]) {
-                    int a = ((h.getLocation()[0] - location[0])*10)+h.getType();
-                    if(a<ans && a>0) ans = a;
-                }
-            }
-        }else if (dir.equals("downright") && location[0]<m && location[1]<n){
-            for (Host h : host) {
-                if (h.getLocation()[0] - location[0] == h.getLocation()[1] - location[1]) {
-                    int a = ((h.getLocation()[0] - location[0])*10)+h.getType();
-                    if(a<ans && a>0) ans = a;
-                }
-            }
-        }else{
-            System.out.println("Wrong direction!");
-        }
-        if(ans == m*n*10) return 0;
-        else return ans;
+        System.out.println(ans);
+        return ans;
     }
 
 }
