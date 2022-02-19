@@ -1,25 +1,11 @@
 package CARIN.Model;
-import CARIN.Parser.Number;
-import CARIN.Parser.Parser;
-
-import java.util.*;
 
 public class Antibody extends HostImp{
 
     public Antibody(String geneticCode, int health, int attackDamage,int gain,int moveCost,
                     int[] location,Body body) {
-        this.health = health;
-        this.attackDamage = attackDamage;
-        this.gain = gain;
+        super(geneticCode, health, attackDamage, gain, location, body);
         this.moveCost = moveCost;
-        this.location = location;
-        this.geneticCode = geneticCode;
-        this.body = body;
-        this.m = this.body.getmn()[0];
-        this.n = this.body.getmn()[1];
-        this.identifier = new HashMap<>();
-        this.identifier.put("random", new Number((int)(Math.random()*99)));
-        this.parser = new Parser(geneticCode, this);
     }
 
     @Override

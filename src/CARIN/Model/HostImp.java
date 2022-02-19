@@ -1,6 +1,7 @@
 package CARIN.Model;
 
 import CARIN.Parser.Expr;
+import CARIN.Parser.Number;
 import CARIN.Parser.Parser;
 
 import java.util.*;
@@ -8,11 +9,24 @@ import java.util.*;
 public class HostImp implements Host{
 
     int health, attackDamage, gain, moveCost, m, n;
-    int[] location = new int[2];
+    int[] location;
     String geneticCode;
     HashMap<String, Expr> identifier;
     Parser parser;
     Body body;
+    public HostImp(String geneticCode, int health, int attackDamage,int gain, int[] location, Body body){
+        this.health = health;
+        this.attackDamage = attackDamage;
+        this.gain = gain;
+        this.location = location;
+        this.geneticCode = geneticCode;
+        this.body = body;
+        this.m = this.body.getmn()[0];
+        this.n = this.body.getmn()[1];
+        this.identifier = new HashMap<>();
+        this.identifier.put("random", new Number((int)(Math.random()*99)));
+        this.parser = new Parser(geneticCode, this);
+    }
 
     @Override
     public void shoot(String direction) {
