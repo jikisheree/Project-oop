@@ -194,14 +194,4 @@ public class Parser {
             each.eval();
         }
     }
-
-    public static void main(String[] args) {
-//         example genetic code in spec doc
-        String gene = "virusLoc = 0 " +
-                "if (random / 10 - 2^2) " +
-                "then move up else move down";
-        Parser parser = new Parser(gene, new HostImp());
-        parser.eval();
-    }
-
 }

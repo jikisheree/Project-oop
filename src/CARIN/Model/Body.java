@@ -16,5 +16,5 @@ public interface Body {
     int[] getmn();
     void addvirus(int[] location);
     Host findOrganByLocation(int[] location);
-    boolean findhost(int[] location);
+    boolean checkemptycell(int[] location);
 }
