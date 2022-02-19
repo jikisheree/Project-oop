@@ -198,32 +198,8 @@ public class Parser {
     public static void main(String[] args) {
 //         example genetic code in spec doc
         String gene = "virusLoc = 0 " +
-                "if (virusLoc / 10 - 2^2) " +
-                "then " +
-                "  if (virusLoc % 10 - 7) then move upleft " +
-                "  else if (virusLoc % 10 - 6) then move left " +
-                "  else if (virusLoc % 10 - 5) then move downleft " +
-                "  else if (virusLoc % 10 - 4) then move down " +
-                "  else if (virusLoc % 10 - 3) then move downright " +
-                "  else if (virusLoc % 10 - 2) then move right " +
-                "  else if (virusLoc % 10 - 1) then move upright " +
-                "  else move up " +
-                " else if (virusLoc) " +
-                "then  " +
-                "  if (virusLoc % 10 - 7) then shoot upleft " +
-                "  else if (virusLoc % 10 - 6) then shoot left " +
-                "  else if (virusLoc % 10 - 5) then shoot downleft " +
-                "  else if (virusLoc % 10 - 4) then shoot down " +
-                "  else if (virusLoc % 10 - 3) then shoot downright " +
-                "  else if (virusLoc % 10 - 2) then shoot right " +
-                "  else if (virusLoc % 10 - 1) then shoot upright " +
-                "  else shoot up " +
-                " else " +
-                "{ " +
-                "  move upleft " +
-                "  move left " +
-                "  move downleft " +
-                "} ";
+                "if (random / 10 - 2^2) " +
+                "then move up else move down";
         Parser parser = new Parser(gene, new HostImp());
         parser.eval();
     }
