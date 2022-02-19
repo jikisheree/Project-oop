@@ -44,14 +44,11 @@ public class HostImp implements Host{
             System.out.println("can't shoot");
         }
         if(!Arrays.equals(shootloc, location)) {
-            for (Host h : body.getOrganism()) {
-                if (Arrays.equals(h.getLocation(), shootloc)) {
-                    if(h.setHealth(attackDamage)){
-                        h.isDeath(this);
-                    }
-                    health+=gain;
-                    System.out.println("shoot" + dir);
-                }
+            if(body.findhost(shootloc)){
+                Host shoot = body.findOrganByLocation(shootloc);
+                if(shoot.setHealth(attackDamage)) shoot.isDeath(this);
+                health+=gain;
+                System.out.println("shoot" + dir);
             }
         }
     }
@@ -81,19 +78,14 @@ public class HostImp implements Host{
             newLoc[0]+=1;
             newLoc[1]+=1;
         }else this.cantMove();
-        if(newLoc[0]!=location[0] || newLoc[1]!=location[1]){
+        if(!body.findhost(newLoc)){
             body.move(location,newLoc);
         }
     }
 
     @Override
     public void move(int[] newLocation) {
-        boolean canmove = true;
-        for (Host h : body.getOrganism()) {
-            if(h.getLocation()[0] == newLocation[0] && h.getLocation()[1] == newLocation[1]){
-                canmove = false;}
-        }
-        if(canmove){
+        if(!body.findhost(newLocation)){
             System.out.println(location[0] +""+ location[1] + " moved to " + newLocation[0] + newLocation[1]);
             location = newLocation;
             health -= moveCost;
