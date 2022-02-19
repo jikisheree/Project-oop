@@ -1,9 +1,10 @@
 package CARIN.Model;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BodyImp implements Body{
-    List<Host>organismInOrder = new LinkedList<>();
+    List<Host>organismInOrder = new CopyOnWriteArrayList<>();
     int[][] cellLoc;
     int timeUnit;
     int antiCredit;
@@ -110,6 +111,7 @@ public class BodyImp implements Body{
             else {
                 this.organismInOrder.add(randomAnti(location));
                 addToCellLoc(location);
+                cellLoc[location[0]][location[1]] = order;
                 int loc = Integer.parseInt((location[0])+String.valueOf(location[1]));
                 System.out.println("Added antibody to cell "+ loc);
                 antiCredit -= placeCost;
@@ -119,6 +121,22 @@ public class BodyImp implements Body{
         }else
             System.out.println("Run out of antibody credit! Please try to move your existed antibody instead.");
     }
+
+    /* for test */
+    @Override
+    public void addvirus(int[] location) {
+        if(cellLoc[location[0]][location[1]] == 0){
+            this.organismInOrder.add(randomVirus(location));
+            addToCellLoc(location);
+            cellLoc[location[0]][location[1]] = order;
+            int loc = Integer.parseInt((location[0])+String.valueOf(location[1]));
+            System.out.println("Added virus to cell "+ loc);
+            virusNum++;
+            order++;
+        }else
+            System.out.println("The cell you tried to add a virus is not empty.");
+    }
+
     // adding new virus
     @Override
     public void addVirus() {
@@ -129,6 +147,7 @@ public class BodyImp implements Body{
             int[] location = randomLocation();
             this.organismInOrder.add(randomVirus(location));
             addToCellLoc(location);
+            cellLoc[location[0]][location[1]] = order;
             int loc = Integer.parseInt((location[0])+String.valueOf(location[1]));
             System.out.println("Added virus to cell "+ loc);
             virusNum++;
@@ -143,9 +162,6 @@ public class BodyImp implements Body{
         antiCredit+=placeCost;
         int loc = Integer.parseInt((location[0])+String.valueOf(location[1]));
         System.out.println("Antibody at cell"+ loc+" is dead. Antibody credit added!");
-        antibodyNum++;
-        order++;
-
     }
 
     // when an antibody is dead and turn into a virus
@@ -154,16 +170,18 @@ public class BodyImp implements Body{
         removeOrganism(location);
         this.organismInOrder.add( new Virus(geneticCode, antiHealth, antiAttack, antiGain,location,this));
         addToCellLoc(location);
+        cellLoc[location[0]][location[1]] = order;
         int loc = Integer.parseInt((location[0])+String.valueOf(location[1]));
         System.out.println("Antibody at cell"+ loc+"turned into virus!");
-        virusNum++;
         order++;
+        virusNum++;
     }
     // called to be evaluating organisms in order at each time unit
     @Override
     public void run() {
         Host current;
-        for(int i=1; i<order; i++){
+        int currentOrder = order;
+        for(int i=1; i<currentOrder; i++){
             current = organismInOrder.get(i-1);
             System.out.println("Eval organism "+i);
             current.eval();
@@ -198,18 +216,26 @@ public class BodyImp implements Body{
 
     @Override
     public int[] getmn() {
-        int mn[] = {m,n};
-        return mn;
+        return new int[]{m,n};
     }
 
     private void removeOrganism(int[] location) {
         int m = location[0];
         int n = location[1];
         int currentOrder = cellLoc[m][n];
-        organismInOrder.remove(currentOrder-1);
+        organismInOrder.remove(currentOrder);
         int loc = Integer.parseInt((location[0])+String.valueOf(location[1]));
-        System.out.println("Removed organism at cell "+ loc);
+        System.out.println("Organism at cell "+ loc+" is dead");
         cellLoc[m][n] = 0;
+        checkGameOver();
+    }
+
+    private void checkGameOver(){
+        if(virusNum==0 || antibodyNum==0 ) {
+            System.out.println("Game over ");
+            if (virusNum > antibodyNum) System.out.println("Viruses win");
+            else System.out.println("Antibodies win!");
+        }
     }
 
 }

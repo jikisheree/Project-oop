@@ -14,4 +14,5 @@ public interface Body {
     int getVirusNum();
     int getAntibodyNum();
     int[] getmn();
+    void addvirus(int[] location);
 }
