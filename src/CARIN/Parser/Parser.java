@@ -17,7 +17,7 @@ public class Parser {
     public Parser(String src, Host host){
         this.tkz = new Tokenizer(src);
         this.host = host;
-        idenKeep = new HashMap<>();
+        idenKeep = host.getIdentifier();
         this.statement = new LinkedList<>();
         parse();
     }
@@ -200,8 +200,8 @@ public class Parser {
         String gene = "virusLoc = 0 " +
                 "if (random / 10 - 2^2) " +
                 "then move up else move down";
-        Parser parser = new Parser(gene, new HostImp());
-        parser.eval();
+//        Parser parser = new Parser(gene, new HostImp());
+//        parser.eval();
     }
 
 }
