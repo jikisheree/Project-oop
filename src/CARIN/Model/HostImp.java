@@ -59,10 +59,10 @@ public class HostImp implements Host{
         }
         if(!Arrays.equals(shootloc, location)) {
             if(body.findhost(shootloc)){
+                System.out.println("shoot" + dir);
                 Host shoot = body.findOrganByLocation(shootloc);
                 if(shoot.setHealth(attackDamage)) shoot.isDeath(this);
                 health+=gain;
-                System.out.println("shoot" + dir);
             }
         }
     }

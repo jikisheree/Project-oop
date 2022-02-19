@@ -18,6 +18,7 @@ public class BodyImp implements Body{
     private int virusNum, antibodyNum;
     List<String> geneticCodeAnti;
     List<String> geneticCodeVirus;
+    boolean gameOver = false;
     // input from config file
     // assume m and n is <=10 first
     public BodyImp(
@@ -137,7 +138,6 @@ public class BodyImp implements Body{
         if(cellLoc[location[0]][location[1]] == 0){
             this.organismInOrder.add(randomVirus(location));
             addToCellLoc(location);
-            cellLoc[location[0]][location[1]] = order;
             int loc = Integer.parseInt((location[0])+String.valueOf(location[1]));
             System.out.println("Added virus to cell "+ loc);
             virusNum++;
@@ -156,7 +156,6 @@ public class BodyImp implements Body{
             int[] location = randomLocation();
             this.organismInOrder.add(randomVirus(location));
             addToCellLoc(location);
-            cellLoc[location[0]][location[1]] = order;
             int loc = Integer.parseInt((location[0])+String.valueOf(location[1]));
             System.out.println("Added virus to cell "+ loc);
             virusNum++;
@@ -168,34 +167,42 @@ public class BodyImp implements Body{
     @Override
     public void addVirusTurnAntiCredit(int[] location) {
         removeOrganism(location);
+        virusNum--;
         antiCredit+=placeCost;
         int loc = Integer.parseInt((location[0])+String.valueOf(location[1]));
         System.out.println("Antibody at cell"+ loc+" is dead. Antibody credit added!");
+        checkGameOver();
     }
 
     // when an antibody is dead and turn into a virus
     @Override
     public void addAntiTurnVirus(String geneticCode, int[] location) {
         removeOrganism(location);
+        antibodyNum--;
         this.organismInOrder.add( new Virus(geneticCode, antiHealth, antiAttack, antiGain,location,this));
         addToCellLoc(location);
-        cellLoc[location[0]][location[1]] = order;
         int loc = Integer.parseInt((location[0])+String.valueOf(location[1]));
         System.out.println("Antibody at cell"+ loc+"turned into virus!");
-        order++;
         virusNum++;
+        checkGameOver();
     }
     // called to be evaluating organisms in order at each time unit
     @Override
     public void run() {
         Host current;
-        int currentOrder = order;
-        for(int i=1; i<currentOrder; i++){
-            current = organismInOrder.get(i-1);
-            System.out.println("Eval organism "+i);
-            current.eval();
-        }
+        int size = organismInOrder.size()+1;
+            for (int i = 1; i < size; i++) {
+                if(gameOver) return;
+                else {
+                    current = organismInOrder.get(i - 1);
+                    System.out.println("Eval organism " + i);
+                    current.eval();
+                }
+            }
     }
+
+
+
     // return cell field that contains order of organisms
     @Override
     public int[][] getCellLoc() {
@@ -232,11 +239,16 @@ public class BodyImp implements Body{
         int m = location[0];
         int n = location[1];
         int currentOrder = cellLoc[m][n];
-        organismInOrder.remove(currentOrder);
-        int loc = Integer.parseInt((location[0])+String.valueOf(location[1]));
-        System.out.println("Organism at cell "+ loc+" is dead");
+        organismInOrder.remove(currentOrder-1);
         cellLoc[m][n] = 0;
-        checkGameOver();
+        for(int i=1; i<m; i++){
+            for(int j=1; j<n; j++)
+                if(cellLoc[m][m]!=0)
+                    cellLoc[m][n]-=1;
+        }
+        order--;
+        int loc = Integer.parseInt((location[0])+String.valueOf(location[1]));
+        System.out.println("Organism at cell "+ loc+", order: "+currentOrder+" is dead");
     }
 
     private void checkGameOver(){
@@ -244,6 +256,7 @@ public class BodyImp implements Body{
             System.out.println("Game over ");
             if (virusNum > antibodyNum) System.out.println("Viruses win");
             else System.out.println("Antibodies win!");
+            gameOver = true;
         }
     }
 
