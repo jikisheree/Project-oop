@@ -71,17 +71,17 @@ public class HostImp extends Entity implements Host{
             newLoc[0]-=1;
         }else if (dir.equals("down") && location[0]<m){
             newLoc[0]+=1;
-        }else if (dir.equals("left") && location[1]>0){
+        }else if (dir.equals("left") && location[1]>1){
             newLoc[1]-=1;
         }else if (dir.equals("right") && location[1]<n){
             newLoc[1]+=1;
-        }else if (dir.equals("upleft") && location[0]>1 && location[1]>0){
+        }else if (dir.equals("upleft") && location[0]>1 && location[1]>1){
             newLoc[0]-=1;
             newLoc[1]-=1;
         }else if(dir.equals("upright") && location[0]>1 && location[1]<n){
             newLoc[0]-=1;
             newLoc[1]+=1;
-        }else if (dir.equals("downleft") && location[0]<m && location[1]>0){
+        }else if (dir.equals("downleft") && location[0]<m && location[1]>1){
             newLoc[0]+=1;
             newLoc[1]-=1;
         }else if (dir.equals("downright") && location[0]<m && location[1]<n){
@@ -89,12 +89,12 @@ public class HostImp extends Entity implements Host{
             newLoc[1]+=1;
         }
         if(body.checkEmptyCell(newLoc) && !Arrays.equals(newLoc, location)){
+            System.out.println(location[0] +""+ location[1] + " moved to " + newLoc[0] + newLoc[1]);
             int order = body.getOrganism().indexOf(this);
             int[][] cellLoc = body.getCellLoc();
             cellLoc[location[0]][location[1]] = 0;
             cellLoc[newLoc[0]][newLoc[1]] = order+1;
             location = newLoc;
-            System.out.println(location[0] +""+ location[1] + " moved to " + newLoc[0] + newLoc[1]);
         }else this.cantMove();
     }
 
