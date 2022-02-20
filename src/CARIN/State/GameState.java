@@ -1,5 +1,6 @@
 package CARIN.State;
 
+import CARIN.Game;
 import CARIN.Model.Body;
 import CARIN.Model.BodyImp;
 
@@ -8,8 +9,9 @@ import java.util.LinkedList;
 public class GameState extends State{
 
     private Body body;
-
-    public GameState(){
+    private Game game;
+    public GameState(Game game){
+        this.game = game;
         String gene1 = "antiLoc = virus " +
                 "if (antiLoc / 10 - 1) " +
                 "then " +
@@ -80,7 +82,7 @@ public class GameState extends State{
         LinkedList<String> geneticCodeVirus = new LinkedList<>();
         geneticCodeVirus.add(gene1);
         geneticCodeAnti.add(gene2);
-        body = new BodyImp(geneticCodeAnti,geneticCodeVirus,5, 5, 20,2, 1, 0.8, 20,
+        body = new BodyImp(game,geneticCodeAnti,geneticCodeVirus,5, 5, 20,2, 1, 0.8, 20,
                 20, 2, 20, 20, 1);
         body.addVirus();
         body.addAntibody(new int[]{1, 3});
@@ -99,7 +101,7 @@ public class GameState extends State{
     }
 
     public static void main(String[] args) {
-        GameState game = new GameState();
-        game.update();
+//        GameState game = new GameState();
+//        game.update();
     }
 }

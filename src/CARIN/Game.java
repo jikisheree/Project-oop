@@ -1,20 +1,23 @@
 package CARIN;
 
+import CARIN.State.GameOver;
 import CARIN.State.GameState;
 import CARIN.State.State;
 
 public class Game implements Runnable{
     private Thread thread;
-    private boolean running = false;
+    public boolean running = false;
     public State gameState;
     public State menuState;
+    public State gameOver;
 
     public Game(){
 
     }
     private void init(){
         // initialization
-        gameState = new GameState();
+        gameState = new GameState(this);
+        gameOver = new GameOver(this);
         State.setState(gameState);
     }
     private void update(){
@@ -31,29 +34,30 @@ public class Game implements Runnable{
         init();
 
         int fps = 60;
-        long timePerUpdate = 1000000000 / fps;
-        long delta = 0;
+        double timePerTick = 1000000000 / fps;
+        double delta = 0;
         long now;
         long lastTime = System.nanoTime();
         long timer = 0;
-        int updates = 0;
+        int ticks = 0;
 
         while(running){
             now = System.nanoTime();
-            delta += (now-lastTime) / timePerUpdate;
-            timer += now-lastTime;
+            delta += (now - lastTime) / timePerTick;
+            timer += now - lastTime;
             lastTime = now;
 
-            if(delta >= 1) {
+            if(delta >= 1){
                 update();
                 render();
-                updates++;
+                ticks++;
                 delta--;
             }
+
             if(timer >= 1000000000){
-                System.out.println("Updates and frames: "+updates);
+                System.out.println("Ticks and Frames: " + ticks);
+                ticks = 0;
                 timer = 0;
-                updates = 0;
             }
         }
         try {

@@ -1,5 +1,9 @@
 package CARIN.Model;
 
+import CARIN.Game;
+import CARIN.State.GameOver;
+import CARIN.State.State;
+
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -19,9 +23,11 @@ public class BodyImp implements Body{
     List<String> geneticCodeAnti;
     List<String> geneticCodeVirus;
     boolean gameOver = false;
+    Game game;
     // input from config file
     // assume m and n is <=10 first
     public BodyImp(
+            Game game,
             List<String> geneticCodeAnti,
             List<String> geneticCodeVirus,
             int m, int n,
@@ -35,7 +41,7 @@ public class BodyImp implements Body{
             int virusHealth,
             int virusAttack,
             int virusGain) {
-
+        this.game = game;
         cellLoc = new int[m+1][n+1];
         this.m = m; this.n =n;
         buildField();
@@ -185,14 +191,11 @@ public class BodyImp implements Body{
     // called to be evaluating organisms in order at each time unit
     @Override
     public void run() {
-        Host current;
-        int size = organismInOrder.size()+1;
-            for (int i = 1; i < size; i++) {
+            for (Host each : organismInOrder) {
                 if(gameOver) return;
                 else {
-                    current = organismInOrder.get(i - 1);
-                    System.out.println("Eval organism " + i);
-                    current.eval();
+                    System.out.println("Eval organism " + (organismInOrder.indexOf(each)+1));
+                    each.eval();
                 }
             }
 
@@ -237,10 +240,10 @@ public class BodyImp implements Body{
         int currentOrder = cellLoc[m][n];
         organismInOrder.remove(currentOrder-1);
         cellLoc[m][n] = 0;
-        for(int i=1; i<m; i++){
-            for(int j=1; j<n; j++)
-                if(cellLoc[m][m]!=0)
-                    cellLoc[m][n]-=1;
+        for(int i=1; i<this.m; i++){
+            for(int j=1; j<this.n; j++)
+                if(cellLoc[i][j]!=0 && cellLoc[i][j]>currentOrder)
+                    cellLoc[i][j]-=1;
         }
         order--;
         int loc = Integer.parseInt((location[0])+String.valueOf(location[1]));
@@ -253,17 +256,20 @@ public class BodyImp implements Body{
             if (virusNum > antibodyNum) System.out.println("Viruses win");
             else System.out.println("Antibodies win!");
             gameOver = true;
+            GameOver over = new GameOver(game);
+            State.setState(over);
         }
     }
 
     @Override
     public void update() {
         int t = 0;
-        while(virusNum!=0 && antibodyNum!=0) {
+        while(virusNum!=0 && antibodyNum!=0 && t<10) {
             run();
             t++;
         }
         System.out.println("time used = "+t);
+        State.setState(new GameOver(game));
     }
 
     @Override
@@ -272,89 +278,89 @@ public class BodyImp implements Body{
     }
 
     public static void main(String[] args){
-        BodyImp body;
-        String gene = "antiLoc = virus " +
-                "if (antiLoc / 10 - 1) " +
-                "then " +
-                "  if (antiLoc % 10 - 7) then move upleft " +
-                "  else if (antiLoc % 10 - 6) then move left " +
-                "  else if (antiLoc % 10 - 5) then move downleft " +
-                "  else if (antiLoc % 10 - 4) then move down " +
-                "  else if (antiLoc % 10 - 3) then move downright " +
-                "  else if (antiLoc % 10 - 2) then move right " +
-                "  else if (antiLoc % 10 - 1) then move upright " +
-                "  else move up " +
-                " else if (antiLoc) " +
-                "then  " +
-                "  if (antiLoc % 10 - 7) then shoot upleft " +
-                "  else if (antiLoc % 10 - 6) then shoot left " +
-                "  else if (antiLoc % 10 - 5) then shoot downleft " +
-                "  else if (antiLoc % 10 - 4) then shoot down " +
-                "  else if (antiLoc % 10 - 3) then shoot downright " +
-                "  else if (antiLoc % 10 - 2) then shoot right " +
-                "  else if (antiLoc % 10 - 1) then shoot upright " +
-                "  else shoot up " +
-                " else " +
-                "{ " +
-                "  dir = 10 % 8 " +
-                "  if (dir - 6) then move upleft " +
-                "  else if (dir - 5) then move left " +
-                "  else if (dir - 4) then move downleft " +
-                "  else if (dir - 3) then move down " +
-                "  else if (dir - 2) then move downright " +
-                "  else if (dir - 1) then move right " +
-                "  else if (dir) then move upright " +
-                "  else move up " +
-                "} ";
-        String gene2 = "antiLoc = antibody " +
-                "if (antiLoc / 10 - 1) " +
-                "then " +
-                "  if (antiLoc % 10 - 7) then move upleft " +
-                "  else if (antiLoc % 10 - 6) then move left " +
-                "  else if (antiLoc % 10 - 5) then move downleft " +
-                "  else if (antiLoc % 10 - 4) then move down " +
-                "  else if (antiLoc % 10 - 3) then move downright " +
-                "  else if (antiLoc % 10 - 2) then move right " +
-                "  else if (antiLoc % 10 - 1) then move upright " +
-                "  else move up " +
-                " else if (antiLoc) " +
-                "then  " +
-                "  if (antiLoc % 10 - 7) then shoot upleft " +
-                "  else if (antiLoc % 10 - 6) then shoot left " +
-                "  else if (antiLoc % 10 - 5) then shoot downleft " +
-                "  else if (antiLoc % 10 - 4) then shoot down " +
-                "  else if (antiLoc % 10 - 3) then shoot downright " +
-                "  else if (antiLoc % 10 - 2) then shoot right " +
-                "  else if (antiLoc % 10 - 1) then shoot upright " +
-                "  else shoot up " +
-                " else " +
-                "{ " +
-                "  dir = 10 % 8 " +
-                "  if (dir - 6) then move upleft " +
-                "  else if (dir - 5) then move left " +
-                "  else if (dir - 4) then move downleft " +
-                "  else if (dir - 3) then move down " +
-                "  else if (dir - 2) then move downright " +
-                "  else if (dir - 1) then move right " +
-                "  else if (dir) then move upright " +
-                "  else move up " +
-                "} ";
-        LinkedList<String> geneticCodeAnti = new LinkedList<>();
-        LinkedList<String> geneticCodeVirus = new LinkedList<>();
-        geneticCodeVirus.add(gene);
-        geneticCodeAnti.add(gene2);
-        body = new BodyImp(geneticCodeAnti,geneticCodeVirus,5, 5, 20,2, 1, 0.8, 20,
-                10, 2, 20, 10, 1);
-        body.addAntibody(new int[]{1, 3});
-        body.addVirus();
-        body.addAntibody(new int[]{2, 4});
-        body.addVirus();
-        int t=0;
-        while(body.getVirusNum()!=0 && body.getAntibodyNum()!=0) {
-            body.run();
-            t++;
-        }
-        System.out.println("time used = "+t);
+//        BodyImp body;
+//        String gene = "antiLoc = virus " +
+//                "if (antiLoc / 10 - 1) " +
+//                "then " +
+//                "  if (antiLoc % 10 - 7) then move upleft " +
+//                "  else if (antiLoc % 10 - 6) then move left " +
+//                "  else if (antiLoc % 10 - 5) then move downleft " +
+//                "  else if (antiLoc % 10 - 4) then move down " +
+//                "  else if (antiLoc % 10 - 3) then move downright " +
+//                "  else if (antiLoc % 10 - 2) then move right " +
+//                "  else if (antiLoc % 10 - 1) then move upright " +
+//                "  else move up " +
+//                " else if (antiLoc) " +
+//                "then  " +
+//                "  if (antiLoc % 10 - 7) then shoot upleft " +
+//                "  else if (antiLoc % 10 - 6) then shoot left " +
+//                "  else if (antiLoc % 10 - 5) then shoot downleft " +
+//                "  else if (antiLoc % 10 - 4) then shoot down " +
+//                "  else if (antiLoc % 10 - 3) then shoot downright " +
+//                "  else if (antiLoc % 10 - 2) then shoot right " +
+//                "  else if (antiLoc % 10 - 1) then shoot upright " +
+//                "  else shoot up " +
+//                " else " +
+//                "{ " +
+//                "  dir = 10 % 8 " +
+//                "  if (dir - 6) then move upleft " +
+//                "  else if (dir - 5) then move left " +
+//                "  else if (dir - 4) then move downleft " +
+//                "  else if (dir - 3) then move down " +
+//                "  else if (dir - 2) then move downright " +
+//                "  else if (dir - 1) then move right " +
+//                "  else if (dir) then move upright " +
+//                "  else move up " +
+//                "} ";
+//        String gene2 = "antiLoc = antibody " +
+//                "if (antiLoc / 10 - 1) " +
+//                "then " +
+//                "  if (antiLoc % 10 - 7) then move upleft " +
+//                "  else if (antiLoc % 10 - 6) then move left " +
+//                "  else if (antiLoc % 10 - 5) then move downleft " +
+//                "  else if (antiLoc % 10 - 4) then move down " +
+//                "  else if (antiLoc % 10 - 3) then move downright " +
+//                "  else if (antiLoc % 10 - 2) then move right " +
+//                "  else if (antiLoc % 10 - 1) then move upright " +
+//                "  else move up " +
+//                " else if (antiLoc) " +
+//                "then  " +
+//                "  if (antiLoc % 10 - 7) then shoot upleft " +
+//                "  else if (antiLoc % 10 - 6) then shoot left " +
+//                "  else if (antiLoc % 10 - 5) then shoot downleft " +
+//                "  else if (antiLoc % 10 - 4) then shoot down " +
+//                "  else if (antiLoc % 10 - 3) then shoot downright " +
+//                "  else if (antiLoc % 10 - 2) then shoot right " +
+//                "  else if (antiLoc % 10 - 1) then shoot upright " +
+//                "  else shoot up " +
+//                " else " +
+//                "{ " +
+//                "  dir = 10 % 8 " +
+//                "  if (dir - 6) then move upleft " +
+//                "  else if (dir - 5) then move left " +
+//                "  else if (dir - 4) then move downleft " +
+//                "  else if (dir - 3) then move down " +
+//                "  else if (dir - 2) then move downright " +
+//                "  else if (dir - 1) then move right " +
+//                "  else if (dir) then move upright " +
+//                "  else move up " +
+//                "} ";
+//        LinkedList<String> geneticCodeAnti = new LinkedList<>();
+//        LinkedList<String> geneticCodeVirus = new LinkedList<>();
+//        geneticCodeVirus.add(gene);
+//        geneticCodeAnti.add(gene2);
+//        body = new BodyImp(geneticCodeAnti,geneticCodeVirus,5, 5, 20,2, 1, 0.8, 20,
+//                10, 2, 20, 10, 1);
+//        body.addAntibody(new int[]{1, 3});
+//        body.addVirus();
+//        body.addAntibody(new int[]{2, 4});
+//        body.addVirus();
+//        int t=0;
+//        while(body.getVirusNum()!=0 && body.getAntibodyNum()!=0) {
+//            body.run();
+//            t++;
+//        }
+//        System.out.println("time used = "+t);
     }
 
 
