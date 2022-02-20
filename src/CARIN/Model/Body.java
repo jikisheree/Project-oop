@@ -13,8 +13,10 @@ public interface Body {
     void move(int[] location, int[] newLocation);
     int getVirusNum();
     int getAntibodyNum();
-    int[] getmn();
+    int[] getMN();
     void addvirus(int[] location);
     Host findOrganByLocation(int[] location);
-    boolean checkemptycell(int[] location);
+    boolean checkEmptyCell(int[] location);
+    void update();
+    void render();
 }

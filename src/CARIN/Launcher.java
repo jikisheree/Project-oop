@@ -1,5 +1,9 @@
 package CARIN;
 
 public class Launcher {
-    Game game = new Game();
+    public static void main(String[] args) {
+        Game game = new Game();
+        game.start();
+    }
+
 }

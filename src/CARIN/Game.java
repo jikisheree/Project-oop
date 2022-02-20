@@ -19,9 +19,12 @@ public class Game implements Runnable{
     }
     private void update(){
         // run evaluation
+        if(State.getState() != null)
+            State.getState().update();
     }
     private void render(){
-        gameState.render();
+        if(State.getState() != null)
+            State.getState().render();
     }
     @Override
     public void run() {
