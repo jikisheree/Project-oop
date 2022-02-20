@@ -20,4 +20,13 @@ public class Virus extends HostImp {
         body.addVirusTurnAntiCredit(location);
     }
 
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void render() {
+
+    }
 }

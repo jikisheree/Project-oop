@@ -105,7 +105,7 @@ public class BodyImp implements Body{
     }
 
     @Override
-    public boolean findhost(int[] location) {
+    public boolean findHost(int[] location) {
         int m = location[0];
         int n = location[1];
         int order = cellLoc[m][n];
@@ -201,8 +201,6 @@ public class BodyImp implements Body{
             }
     }
 
-
-
     // return cell field that contains order of organisms
     @Override
     public int[][] getCellLoc() {
@@ -259,5 +257,16 @@ public class BodyImp implements Body{
             gameOver = true;
         }
     }
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void render() {
+
+    }
+
 
 }

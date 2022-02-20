@@ -6,7 +6,7 @@ import CARIN.Parser.Parser;
 
 import java.util.*;
 
-public class HostImp implements Host{
+public class HostImp extends Entity implements Host{
 
     int health, attackDamage, gain, moveCost, m, n;
     int[] location;
@@ -15,6 +15,7 @@ public class HostImp implements Host{
     Parser parser;
     Body body;
     public HostImp(String geneticCode, int health, int attackDamage,int gain, int[] location, Body body){
+        super();
         this.health = health;
         this.attackDamage = attackDamage;
         this.gain = gain;
@@ -58,7 +59,7 @@ public class HostImp implements Host{
             System.out.println("can't shoot");
         }
         if(!Arrays.equals(shootloc, location)) {
-            if(body.findhost(shootloc)){
+            if(body.findHost(shootloc)){
                 System.out.println("shoot" + dir);
                 Host shoot = body.findOrganByLocation(shootloc);
                 if(shoot.setHealth(attackDamage)) shoot.isDeath(this);
@@ -92,14 +93,14 @@ public class HostImp implements Host{
             newLoc[0]+=1;
             newLoc[1]+=1;
         }else this.cantMove();
-        if(!body.findhost(newLoc)){
+        if(!body.findHost(newLoc)){
             body.move(location,newLoc);
         }
     }
 
     @Override
     public void move(int[] newLocation) {
-        if(!body.findhost(newLocation)){
+        if(!body.findHost(newLocation)){
             System.out.println(location[0] +""+ location[1] + " moved to " + newLocation[0] + newLocation[1]);
             location = newLocation;
             health -= moveCost;
@@ -233,28 +234,28 @@ public class HostImp implements Host{
             case "up":
                 while (ans == 0 && loc[0] > 1) {
                     loc[0]--;
-                    if (body.findhost(loc))
+                    if (body.findHost(loc))
                         ans = ((location[0] - loc[0]) * 10) + body.findOrganByLocation(loc).getType();
                 }
                 break;
             case "down":
                 while (ans == 0 && loc[0] < m) {
                     loc[0]++;
-                    if (body.findhost(loc))
+                    if (body.findHost(loc))
                         ans = ((loc[0] - location[0]) * 10) + body.findOrganByLocation(loc).getType();
                 }
                 break;
             case "left":
                 while (ans == 0 && loc[1] > 1) {
                     loc[1]--;
-                    if (body.findhost(loc))
+                    if (body.findHost(loc))
                         ans = ((location[1] - loc[1]) * 10) + body.findOrganByLocation(loc).getType();
                 }
                 break;
             case "right":
                 while (ans == 0 && loc[1] < n) {
                     loc[1]++;
-                    if (body.findhost(loc))
+                    if (body.findHost(loc))
                         ans = ((loc[1] - location[1]) * 10) + body.findOrganByLocation(loc).getType();
                 }
                 break;
@@ -262,7 +263,7 @@ public class HostImp implements Host{
                 while (ans == 0 && loc[0] > 1 && loc[1] > 1) {
                     loc[0]--;
                     loc[1]--;
-                    if (body.findhost(loc))
+                    if (body.findHost(loc))
                         ans = ((location[0] - loc[0]) * 10) + body.findOrganByLocation(loc).getType();
                 }
                 break;
@@ -270,7 +271,7 @@ public class HostImp implements Host{
                 while (ans == 0 && loc[0] > 1 && loc[1] < n) {
                     loc[0]--;
                     loc[1]++;
-                    if (body.findhost(loc))
+                    if (body.findHost(loc))
                         ans = ((loc[1] - location[1]) * 10) + body.findOrganByLocation(loc).getType();
                 }
                 break;
@@ -278,7 +279,7 @@ public class HostImp implements Host{
                 while (ans == 0 && loc[0] < m && loc[1] > 1) {
                     loc[0]++;
                     loc[1]--;
-                    if (body.findhost(loc))
+                    if (body.findHost(loc))
                         ans = ((location[1] - loc[1]) * 10) + body.findOrganByLocation(loc).getType();
                 }
                 break;
@@ -286,7 +287,7 @@ public class HostImp implements Host{
                 while (ans == 0 && loc[0] < m && loc[1] < n) {
                     loc[0]++;
                     loc[1]++;
-                    if (body.findhost(loc))
+                    if (body.findHost(loc))
                         ans = ((loc[0] - location[0]) * 10) + body.findOrganByLocation(loc).getType();
                 }
                 break;
@@ -298,4 +299,13 @@ public class HostImp implements Host{
         return ans;
     }
 
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void render() {
+
+    }
 }

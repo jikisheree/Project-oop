@@ -23,5 +23,14 @@ public class Antibody extends HostImp{
         body.addAntiTurnVirus(virus.getGeneticCode(),location);
     }
 
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void render() {
+
+    }
 
 }
