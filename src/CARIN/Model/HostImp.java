@@ -57,9 +57,9 @@ public class HostImp extends Entity implements Host{
             shootloc[0]+=1;
             shootloc[1]+=1;
         }
-         if(!body.checkEmptyCell(shootloc) && !Arrays.equals(shootloc, location)){
-             System.out.println("shoot" + dir);
-             Host shoot = body.findOrganByLocation(shootloc);
+        Host shoot = body.findOrganByLocation(shootloc);
+         if(!body.checkEmptyCell(shootloc) && !Arrays.equals(shootloc, location) && shoot.getStatus().equals("normal")){
+             System.out.println(this.location[0] + "" + this.location[1] + " shoot " + dir + shoot.getLocation()[0] + "" + shoot.getLocation()[1]);
              if(shoot.setHealth(attackDamage)) shoot.isDeath(this);
              health+=gain;
         }else System.out.println("can't shoot");
@@ -90,7 +90,15 @@ public class HostImp extends Entity implements Host{
             newLoc[0]+=1;
             newLoc[1]+=1;
         }
+
         if(body.checkEmptyCell(newLoc) && !Arrays.equals(newLoc, location)){
+            System.out.println(location[0] +""+ location[1] + " moved to " + newLoc[0] + newLoc[1]);
+            int order = body.getOrganism().indexOf(this);
+            int[][] cellLoc = body.getCellLoc();
+            cellLoc[location[0]][location[1]] = 0;
+            cellLoc[newLoc[0]][newLoc[1]] = order+1;
+            location = newLoc;
+        }else if(!body.checkEmptyCell(newLoc) && !Arrays.equals(newLoc, location) && body.findOrganByLocation(newLoc).getStatus().equals("death")) {
             System.out.println(location[0] +""+ location[1] + " moved to " + newLoc[0] + newLoc[1]);
             int order = body.getOrganism().indexOf(this);
             int[][] cellLoc = body.getCellLoc();

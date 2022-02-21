@@ -178,7 +178,7 @@ public class BodyImp implements Body{
     private void addAntiTurnVirus(String geneticCode, int[] location) {
         antibodyNum--;
         this.organismInOrder.add( new Virus(geneticCode, antiHealth, antiAttack, antiGain,location,this));
-        cellLoc[location[0]][location[1]] = order-1;
+        cellLoc[location[0]][location[1]] = order;
         int loc = Integer.parseInt((location[0])+String.valueOf(location[1]));
         System.out.println("Antibody at cell"+ loc+"turned into virus!");
         virusNum++;
