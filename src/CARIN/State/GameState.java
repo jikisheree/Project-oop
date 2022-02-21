@@ -9,9 +9,8 @@ import java.util.LinkedList;
 public class GameState extends State{
 
     private Body body;
-    private Game game;
     public GameState(Game game){
-        this.game = game;
+        super(game);
         String gene1 = "antiLoc = virus " +
                 "if (antiLoc / 10 - 1) " +
                 "then " +
@@ -98,10 +97,5 @@ public class GameState extends State{
     @Override
     public void render() {
         body.render();
-    }
-
-    public static void main(String[] args) {
-//        GameState game = new GameState();
-//        game.update();
     }
 }

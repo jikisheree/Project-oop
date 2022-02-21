@@ -3,6 +3,7 @@ package CARIN.Model;
 public abstract class Entity {
 
     protected float x, y;
+    protected String status;
 
     public Entity(){
 //        this.x = x;

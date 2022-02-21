@@ -4,10 +4,8 @@ import CARIN.Game;
 
 public class GameOver extends State{
 
-    Game game;
-
     public GameOver(Game game){
-        this.game = game;
+       super(game);
     }
     @Override
     public void update() {
