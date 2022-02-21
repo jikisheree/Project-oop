@@ -20,7 +20,7 @@ public class Antibody extends HostImp{
 
     @Override
     public void isDeath(Host virus){
-        body.addAntiTurnVirus(virus.getGeneticCode(),location);
+        setStatus("death", virus);
     }
 
     @Override

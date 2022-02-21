@@ -14,6 +14,7 @@ public class HostImp extends Entity implements Host{
     HashMap<String, Expr> identifier;
     Parser parser;
     Body body;
+    String status;
     public HostImp(String geneticCode, int health, int attackDamage,int gain, int[] location, Body body){
         this.health = health;
         this.attackDamage = attackDamage;
@@ -26,6 +27,7 @@ public class HostImp extends Entity implements Host{
         this.identifier = new HashMap<>();
         this.identifier.put("random", new Number((int)(Math.random()*99)));
         this.parser = new Parser(geneticCode, this);
+        this.status = "normal";
     }
 
     @Override
@@ -136,6 +138,17 @@ public class HostImp extends Entity implements Host{
         return geneticCode;
     }
 
+    @Override
+    public void setStatus(String s, Host host) {
+        this.geneticCode = host.getGeneticCode();
+        status = s;
+    }
+
+    @Override
+    public String getStatus() {
+        return status;
+    }
+
     public void cantMove(){}
 
     @Override
@@ -145,7 +158,9 @@ public class HostImp extends Entity implements Host{
 
     @Override
     public boolean setHealth(int damage) {
-        health-=damage;
+        if(health>0) {
+            health -= damage;
+        }
         return health <= 0;
     }
 

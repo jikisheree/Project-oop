@@ -17,7 +17,7 @@ public class Virus extends HostImp {
     }
     @Override
     public void isDeath(Host antibody){
-        body.addVirusTurnAntiCredit(location);
+        setStatus("death", antibody);
     }
 
     @Override

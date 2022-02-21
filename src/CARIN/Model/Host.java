@@ -18,4 +18,6 @@ public interface Host {
     void eval();
     HashMap<String, Expr> getIdentifier();
     String getGeneticCode();
+    void setStatus(String s, Host host);
+    String getStatus();
 }
