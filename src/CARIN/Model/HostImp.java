@@ -178,7 +178,7 @@ public class HostImp extends Entity implements Host{
         int ans = m*n*10;
         String dir = "notfound";
         for (Host h : body.getOrganism()) {
-            if(h.getType() == this.getType()){
+            if(h.getType() == this.getType() && h.getStatus().equals("normal")){
                 if(h != this)
                     host.add(h);
             }
@@ -257,53 +257,85 @@ public class HostImp extends Entity implements Host{
             case "up":
                 while (ans == 0 && loc[0] > 1) {
                     loc[0]--;
-                    if (!body.checkEmptyCell(loc)) ans = ((location[0] - loc[0]) * 10) + body.findOrganByLocation(loc).getType();
+                    if (!body.checkEmptyCell(loc)){
+                        if(body.findOrganByLocation(loc).getStatus().equals("normal")){
+                            ans = ((location[0] - loc[0]) * 10) + body.findOrganByLocation(loc).getType();
+                        }
+                    }
                 }
                 break;
             case "down":
                 while (ans == 0 && loc[0] < m) {
                     loc[0]++;
-                    if (!body.checkEmptyCell(loc)) ans = ((loc[0] - location[0]) * 10) + body.findOrganByLocation(loc).getType();
+                    if (!body.checkEmptyCell(loc)){
+                        if(body.findOrganByLocation(loc).getStatus().equals("normal")){
+                            ans = ((loc[0] - location[0]) * 10) + body.findOrganByLocation(loc).getType();
+                        }
+                    }
                 }
                 break;
             case "left":
                 while (ans == 0 && loc[1] > 1) {
                     loc[1]--;
-                    if (!body.checkEmptyCell(loc)) ans = ((location[1] - loc[1]) * 10) + body.findOrganByLocation(loc).getType();
+                    if (!body.checkEmptyCell(loc)){
+                        if(body.findOrganByLocation(loc).getStatus().equals("normal")){
+                            ans = ((location[1] - loc[1]) * 10) + body.findOrganByLocation(loc).getType();
+                        }
+                    }
                 }
                 break;
             case "right":
                 while (ans == 0 && loc[1] < n) {
                     loc[1]++;
-                    if (!body.checkEmptyCell(loc)) ans = ((loc[1] - location[1]) * 10) + body.findOrganByLocation(loc).getType();
+                    if (!body.checkEmptyCell(loc)){
+                        if(body.findOrganByLocation(loc).getStatus().equals("normal")){
+                            ans = ((loc[1] - location[1]) * 10) + body.findOrganByLocation(loc).getType();
+                        }
+                    }
                 }
                 break;
             case "upleft":
                 while (ans == 0 && loc[0] > 1 && loc[1] > 1) {
                     loc[0]--;
                     loc[1]--;
-                    if (!body.checkEmptyCell(loc)) ans = ((location[0] - loc[0]) * 10) + body.findOrganByLocation(loc).getType();
+                    if (!body.checkEmptyCell(loc)){
+                        if(body.findOrganByLocation(loc).getStatus().equals("normal")){
+                            ans = ((location[0] - loc[0]) * 10) + body.findOrganByLocation(loc).getType();
+                        }
+                    }
                 }
                 break;
             case "upright":
                 while (ans == 0 && loc[0] > 1 && loc[1] < n) {
                     loc[0]--;
                     loc[1]++;
-                    if (!body.checkEmptyCell(loc)) ans = ((loc[1] - location[1]) * 10) + body.findOrganByLocation(loc).getType();
+                    if (!body.checkEmptyCell(loc)){
+                        if(body.findOrganByLocation(loc).getStatus().equals("normal")){
+                            ans = ((loc[1] - location[1]) * 10) + body.findOrganByLocation(loc).getType();
+                        }
+                    }
                 }
                 break;
             case "downleft":
                 while (ans == 0 && loc[0] < m && loc[1] > 1) {
                     loc[0]++;
                     loc[1]--;
-                    if (!body.checkEmptyCell(loc)) ans = ((location[1] - loc[1]) * 10) + body.findOrganByLocation(loc).getType();
+                    if (!body.checkEmptyCell(loc)){
+                        if(body.findOrganByLocation(loc).getStatus().equals("normal")){
+                            ans = ((location[1] - loc[1]) * 10) + body.findOrganByLocation(loc).getType();
+                        }
+                    }
                 }
                 break;
             case "downright":
                 while (ans == 0 && loc[0] < m && loc[1] < n) {
                     loc[0]++;
                     loc[1]++;
-                    if (!body.checkEmptyCell(loc)) ans = ((loc[0] - location[0]) * 10) + body.findOrganByLocation(loc).getType();
+                    if (!body.checkEmptyCell(loc)){
+                        if(body.findOrganByLocation(loc).getStatus().equals("normal")){
+                            ans = ((loc[0] - location[0]) * 10) + body.findOrganByLocation(loc).getType();
+                        }
+                    }
                 }
                 break;
             default:
